@@ -272,7 +272,7 @@ log_post = function (par::Vector{Float64})
 
         ll_chaz = sum(OUT[:, 3])
 
-        l_prior = sum(logpdf.(distpriorint, odeparams))
+        l_prior = sum(logpdf.(distprior, odeparams))
 
         l_JAC = sum(par)
 
