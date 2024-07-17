@@ -251,19 +251,19 @@ distprior = Gamma(2,2)
 
 # Log-posterior
 log_post = function (par::Vector{Float64})
-    if any(par .>  5.0)
+    if any(par .> 3.0)
         lp = -Inf64
     else
         # Parameters for the ODE
         odeparams = exp.(par)
 
-
         sol = solve(ODEProblem(HRJ, u0, [0.0, tmax], odeparams); alg_hints=[:stiff])
         #     sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]), Tsit5())
         OUT = sol(df.time)
 
+
         # Terms in the log log likelihood function
-        ll_haz = sum(OUT[1, status])
+        ll_haz = sum(log.(OUT[1, status]))
 
         ll_chaz = sum(OUT[3, :])
 
