@@ -116,7 +116,7 @@ end
 HRJ = ODEFunction(HazResp; jac=jacHR)
 
 # Initial conditions (h,q,H)
-u0 = [1.0e-2, 1.0e-6, 0.0]
+u0 = [1.0e-2, 1.0e-6, 0.0] 
 
 
 
@@ -173,7 +173,6 @@ lu0 = [log(1.0e-2), log(1.0e-6), 0.0]
 Negative log-likelihood functions
 ****************************************************************************
 =#
-# We use negative log-likelihood because by default the optimiser finds the minimum.
 
 # Negative log likelihood function
 mlog_lik = function (par::Vector{Float64})
@@ -254,8 +253,9 @@ Log-posterior functions -- TO BE CORRECTED
 
 
 # Priors
-distpriorint = Normal(0.5, 0.25)
-distpriorbeta = Normal(0, 1)
+#distpriorint = Normal(0.5, 0.25)
+#distpriorbeta = Normal(0, 1)
+distprior = Gamma(2,2)
 
 # Log-posterior
 log_post = function (par::Vector{Float64})
@@ -279,11 +279,11 @@ log_post = function (par::Vector{Float64})
 
         ll_chaz = sum(OUT[:, 3])
 
-        l_priorint = sum(logpdf.(distpriorint, par[indint]))
+        l_prior = sum(logpdf.(distprior, odeparams[indint]))
 
-        l_priorbeta = sum(logpdf.(distpriorbeta, par[indbeta]))
+        l_JAC = sum(par)
 
-        lp = ll_haz - ll_chaz + l_priorint + l_priorbeta
+        lp = ll_haz - ll_chaz + l_prior + l_JAC
     end
     return lp
 end
