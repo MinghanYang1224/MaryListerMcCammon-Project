@@ -345,10 +345,10 @@ hcat(MLER,vec(mean(out.X,dims=2)))
 burn = 1
 thin = 50
 
-h1a = histogram(out.X[1, burn:thin:end])
-h2a = histogram(out.X[2, burn:thin:end])
-h3a = histogram(out.X[3, burn:thin:end])
-h4a = histogram(out.X[4, burn:thin:end])
+h1a = histogram(exp.(out.X[1, burn:thin:end]))
+h2a = histogram(exp.(out.X[2, burn:thin:end]))
+h3a = histogram(exp.(out.X[3, burn:thin:end]))
+h4a = histogram(exp.(out.X[4, burn:thin:end]))
 
 
 plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
