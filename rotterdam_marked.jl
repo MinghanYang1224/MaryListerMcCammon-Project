@@ -173,6 +173,7 @@ lu0 = [log(1.0e-2), log(1.0e-6), 0.0]
 Negative log-likelihood functions
 ****************************************************************************
 =#
+# We use negative log-likelihood because by default the optimiser finds the minimum.
 
 # Negative log likelihood function
 mlog_lik = function (par::Vector{Float64})
