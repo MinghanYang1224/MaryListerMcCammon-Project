@@ -46,7 +46,6 @@ Data preparation
 
 #= Data =#
 df_full = CSV.File("rotterdamFull.csv");
-df0 = CSV.File("rotterdam.csv");
 
 
 df = DataFrame(time=collect(df_full.dtime) ./ 365.25,
@@ -236,7 +235,7 @@ initmle = [0.5381167, -2.3121004, 1.9444865, 1.5792623]
 
 optimiser = optimize(mlog_lik, initmle * 0.0, method=NelderMead(), iterations=10000)
 
-MLER = optimiser.minimizer # the optimal parameter values for lambda, kappa, alpha, beta
+MLE = optimiser.minimizer # the optimal parameter values for lambda, kappa, alpha, beta
 # Save MLE
 writedlm("MLE.txt", optimiser.minimizer)
 
@@ -252,28 +251,26 @@ distprior = Gamma(2,2)
 
 # Log-posterior
 log_post = function (par::Vector{Float64})
-    if any(par .>  3.0)
+    if any(par .>  5.0)
         lp = -Inf64
     else
         # Parameters for the ODE
         odeparams = exp.(par)
 
 
-        OUT = zeros(Float64, n, 3)
-        for i in 1:n
-            sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
-         #   sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]),Tsit5())
-         #   sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]),Rodas5P())
-            OUT[i, :] = reduce(vcat, sol.u[end, :])
-        end
+        sol = solve(ODEProblem(HRJ, u0, [0.0, tmax], odeparams); alg_hints=[:stiff])
+        #     sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]), Tsit5())
+        OUT = sol(df.time)
 
         # Terms in the log log likelihood function
-        ll_haz = sum(log.( OUT[status, 1] ))
+        ll_haz = sum(OUT[1, status])
 
-        ll_chaz = sum(OUT[:, 3])
+        ll_chaz = sum(OUT[3, :])
 
+        # log prior
         l_prior = sum(logpdf.(distprior, odeparams))
 
+        # log-Jacobian
         l_JAC = sum(par)
 
         lp = ll_haz - ll_chaz + l_prior + l_JAC
@@ -282,56 +279,54 @@ log_post = function (par::Vector{Float64})
 end
 
 
-# Log-posterior (log h and log q)
-log_postL = function (par::Vector{Float64})
-    if any(par .> 3.0)
-        lp = -Inf64
-    else
-        # Parameters for the ODE
-        odeparams = exp.(hcat(des_l * par[1:p_l],
-            des_k * par[(p_l+1):(p_l+p_k)],
-            des_a * par[(p_l+p_k+1):(p_l+p_k+p_a)],
-            des_b * par[(p_l+p_k+p_a+1):(p_l+p_k+p_a+p_b)]))
+# # Log-posterior (log h and log q)
+# log_postL = function (par::Vector{Float64})
+#     if any(par .> 3.0)
+#         lp = -Inf64
+#     else
+#         # Parameters for the ODE
+#         odeparams = exp.(hcat(des_l * par[1:p_l],
+#             des_k * par[(p_l+1):(p_l+p_k)],
+#             des_a * par[(p_l+p_k+1):(p_l+p_k+p_a)],
+#             des_b * par[(p_l+p_k+p_a+1):(p_l+p_k+p_a+p_b)]))
 
 
-        OUT = zeros(Float64, n, 3)
-        for i in 1:n
-          #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), lsoda())
-           # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Tsit5())
-          #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff], abstol=1e-6, reltol=1e-6, maxiters=Int(1e6))
-         #   sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Tsit5(); abstol=1e-6, reltol=1e-6, maxiters=Int(1e7))
-         #sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), AutoTsit5(Rosenbrock23()))
-        # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
-        # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Rosenbrock23())
-         sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
-        # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), CVODE_BDF())
-            OUT[i, :] = reduce(vcat, sol.u[end, :])
-        end
+#         OUT = zeros(Float64, n, 3)
+#         for i in 1:n
+#           #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), lsoda())
+#            # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Tsit5())
+#           #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff], abstol=1e-6, reltol=1e-6, maxiters=Int(1e6))
+#          #   sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Tsit5(); abstol=1e-6, reltol=1e-6, maxiters=Int(1e7))
+#          #sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), AutoTsit5(Rosenbrock23()))
+#         # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
+#         # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Rosenbrock23())
+#          sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
+#         # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), CVODE_BDF())
+#             OUT[i, :] = reduce(vcat, sol.u[end, :])
+#         end
 
-        # Terms in the log log likelihood function
-        ll_haz = sum( OUT[status, 1] )
+#         # Terms in the log log likelihood function
+#         ll_haz = sum( OUT[status, 1] )
 
-        ll_chaz = sum(OUT[:, 3])
+#         ll_chaz = sum(OUT[:, 3])
 
-        l_priorint = sum(logpdf.(distpriorint, par[indint]))
+#         l_priorint = sum(logpdf.(distpriorint, par[indint]))
 
-        l_priorbeta = sum(logpdf.(distpriorbeta, par[indbeta]))
+#         l_priorbeta = sum(logpdf.(distpriorbeta, par[indbeta]))
 
-        lp = ll_haz - ll_chaz + l_priorint + l_priorbeta
-    end
-    return lp
-end
+#         lp = ll_haz - ll_chaz + l_priorint + l_priorbeta
+#     end
+#     return lp
+# end
 
-MLER = vec(readdlm("MLE.txt"))
-log_post(MLER)
-log_postL(MLER)
+MLE = vec(readdlm("MLE.txt"))
+log_post(MLE)
 
 # Run NMC iterations of the Adaptive Metropolis:
-#init0 = MLER
 
 NMC = 75000
 Random.seed!(1234)
-out = adaptive_rwm(MLER, log_postL, NMC; algorithm=:ram)
+out = adaptive_rwm(MLE, log_post, NMC; algorithm=:ram)
 
 # Run NMC iterations of the Adaptive Metropolis:
 #init0 = MLER
