@@ -325,7 +325,7 @@ log_post(MLE)
 # Run NMC iterations of the Adaptive Metropolis:
 
 NMC = 75000
-Random.seed!(1234)
+Random.seed!(123)
 out = adaptive_rwm(MLE, log_post, NMC; algorithm=:ram)
 
 # Run NMC iterations of the Adaptive Metropolis:
