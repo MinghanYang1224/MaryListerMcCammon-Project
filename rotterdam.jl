@@ -340,7 +340,7 @@ out = adaptive_rwm(MLE, log_post, NMC; algorithm=:ram)
 mapslices(x -> "$(mean(x)) ± $(1.96std(x))", out.X, dims=2)
 
 
-hcat(MLER,vec(mean(out.X,dims=2)))
+hcat(MLE,vec(mean(out.X,dims=2)))
 
 burn = 1
 thin = 50
