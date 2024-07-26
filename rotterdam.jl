@@ -241,7 +241,7 @@ writedlm("MLE.txt", optimiser.minimizer)
 
 #=
 ****************************************************************************
-Log-posterior functions -- TO BE CORRECTED
+Log-posterior functions -- TO BE CORRECTED and COMPARED
 ****************************************************************************
 =#
 
