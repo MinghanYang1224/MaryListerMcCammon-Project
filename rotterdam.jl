@@ -279,48 +279,36 @@ log_post = function (par::Vector{Float64})
 end
 
 
-# # Log-posterior (log h and log q)
-# log_postL = function (par::Vector{Float64})
-#     if any(par .> 3.0)
-#         lp = -Inf64
-#     else
-#         # Parameters for the ODE
-#         odeparams = exp.(hcat(des_l * par[1:p_l],
-#             des_k * par[(p_l+1):(p_l+p_k)],
-#             des_a * par[(p_l+p_k+1):(p_l+p_k+p_a)],
-#             des_b * par[(p_l+p_k+p_a+1):(p_l+p_k+p_a+p_b)]))
+# Log-posterior (log h and log q)
+log_postL = function (par::Vector{Float64})
+    if any(par .> 3.0)
+        lp = -Inf64
+    else
+        # Parameters for the ODE
+        odeparams = exp.(par)
 
+        sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
+        OUT = sol(df.time)
 
-#         OUT = zeros(Float64, n, 3)
-#         for i in 1:n
-#           #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), lsoda())
-#            # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Tsit5())
-#           #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff], abstol=1e-6, reltol=1e-6, maxiters=Int(1e6))
-#          #   sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Tsit5(); abstol=1e-6, reltol=1e-6, maxiters=Int(1e7))
-#          #sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), AutoTsit5(Rosenbrock23()))
-#         # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
-#         # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), Rosenbrock23())
-#          sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]); alg_hints=[:stiff])
-#         # sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]), CVODE_BDF())
-#             OUT[i, :] = reduce(vcat, sol.u[end, :])
-#         end
+        # Terms in the log log likelihood function
+        ll_haz = sum(OUT[1, status])
 
-#         # Terms in the log log likelihood function
-#         ll_haz = sum( OUT[status, 1] )
+        ll_chaz = sum(OUT[3,:])
 
-#         ll_chaz = sum(OUT[:, 3])
+        # log prior
+        l_prior = sum(logpdf.(distprior, odeparams))
 
-#         l_priorint = sum(logpdf.(distpriorint, par[indint]))
+        # log-Jacobian
+        l_JAC = sum(par)
 
-#         l_priorbeta = sum(logpdf.(distpriorbeta, par[indbeta]))
-
-#         lp = ll_haz - ll_chaz + l_priorint + l_priorbeta
-#     end
-#     return lp
-# end
+        lp = ll_haz - ll_chaz + l_prior + l_JAC
+    end
+    return lp
+end
 
 MLE = vec(readdlm("MLE.txt"))
-log_post(MLE)
+log_post(MLE) #-4785.3241550528965
+log_postL(MLE) #-4785.308725489181
 
 # Run NMC iterations of the Adaptive Metropolis:
 
