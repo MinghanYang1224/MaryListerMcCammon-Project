@@ -4,20 +4,21 @@ Required packages
 ****************************************************************************
 =#
 
-Pkg.add("CSV")
-Pkg.add("LSODA")
-Pkg.add("Optim")
-Pkg.add("Distributions")
-Pkg.add("Random")
-Pkg.add("AdaptiveMCMC")
-Pkg.add("Tables")
-Pkg.add("DelimitedFiles")
-Pkg.add("Statistics")
-Pkg.add("Survival")
-Pkg.add("DataFrames")
-Pkg.add("FreqTables")
-Pkg.add("Sundials")
-Pkg.add("ForwardDiff")
+# using Pkg
+# Pkg.add("CSV")
+# Pkg.add("LSODA")
+# Pkg.add("Optim")
+# Pkg.add("Distributions")
+# Pkg.add("Random")
+# Pkg.add("AdaptiveMCMC")
+# Pkg.add("Tables")
+# Pkg.add("DelimitedFiles")
+# Pkg.add("Statistics")
+# Pkg.add("Survival")
+# Pkg.add("DataFrames")
+# Pkg.add("FreqTables")
+# Pkg.add("Sundials")
+# Pkg.add("ForwardDiff")
 
 using Plots
 using DifferentialEquations
@@ -397,7 +398,7 @@ distprior = Gamma(2,2)
 @model function bayesian_model(times, status)
     # prior (defined on the positive parameters)
     # odeparams = exp.(par)
-   odeparams ~ filldist(Gamma(2, 2), 4)
+   odeparams ~ filldist(distprior, 4)
 
     # if any(par .> 3.0)
     #     Turing.@addlogprob! -Inf #Skip this sample
@@ -424,11 +425,11 @@ distprior = Gamma(2,2)
 Random.seed!(123)
 
 model = bayesian_model(times, status)
-NMC = 55000
-burn = 5000
+NMC = 110000
+burn = 10000
 thin = 100
 
-chain = sample(model, NUTS(), NMC)
+chain = sample(model, NUTS(), NMC; init_params=exp.(MLE))
 #burned_chain = Chains(chain[burn+1:end; thin=thin]) #returns an error
 
 # Optionally, plot the results
@@ -458,3 +459,6 @@ hcat(exp.(MLE),vec(mean(chain.value[ burn:thin:end,1:4],dims=1)))
 postsamp = Tables.table(transpose(chain.value[ burn:thin:end,1:4]))
 
 CSV.write("postsamp.csv", postsamp)
+
+# To be discussed
+using MCMCDiagnosticTools
