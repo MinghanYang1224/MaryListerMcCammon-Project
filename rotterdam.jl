@@ -409,12 +409,13 @@ distprior = Gamma(2,2)
 
         ll_haz = sum(OUT[1, status .== 1])
         ll_chaz = sum(OUT[3, :])
-         l_prior = sum(logpdf.(distprior, odeparams))
+        # l_prior = sum(logpdf.(distprior, odeparams))
         # l_JAC = sum(par)
 
         # for loop?
         
-        lp = ll_haz - ll_chaz + l_prior
+#        lp = ll_haz - ll_chaz + l_prior
+        lp = ll_haz - ll_chaz 
         Turing.@addlogprob! lp
     end
 
