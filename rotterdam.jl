@@ -450,3 +450,5 @@ tp4a = plot(chain.value[ burn:thin:end,4])
 
 
 plot(tp1a, tp2a, tp3a, tp4a, layout=(2, 2), legend=false)
+
+hcat(exp.(MLE),vec(mean(chain.value[ burn:thin:end,1:4],dims=1)))
