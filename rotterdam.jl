@@ -246,142 +246,142 @@ Log-posterior functions -- TO BE CORRECTED and COMPARED
 =#
 
 
-# Priors
-distprior = Gamma(2,2)
+# # Priors
+# distprior = Gamma(2,2)
 
-# Log-posterior
-log_post = function (par::Vector{Float64})
-    if any(par .> 3.0)
-        lp = -Inf64
-    else
-        # Parameters for the ODE
-        odeparams = exp.(par)
+# # Log-posterior
+# log_post = function (par::Vector{Float64})
+#     if any(par .> 3.0)
+#         lp = -Inf64
+#     else
+#         # Parameters for the ODE
+#         odeparams = exp.(par)
 
-        sol = solve(ODEProblem(HRJ, u0, [0.0, tmax], odeparams); alg_hints=[:stiff])
-        #     sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]), Tsit5())
-        OUT = sol(df.time)
-
-
-        # Terms in the log log likelihood function
-        ll_haz = sum(log.(OUT[1, status]))
-
-        ll_chaz = sum(OUT[3, :])
-
-        # log prior
-        l_prior = sum(logpdf.(distprior, odeparams))
-
-        # log-Jacobian
-        l_JAC = sum(par)
-
-        lp = ll_haz - ll_chaz + l_prior + l_JAC
-    end
-    return lp
-end
+#         sol = solve(ODEProblem(HRJ, u0, [0.0, tmax], odeparams); alg_hints=[:stiff])
+#         #     sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]), Tsit5())
+#         OUT = sol(df.time)
 
 
-# Log-posterior (log h and log q)
-log_postL = function (par::Vector{Float64})
-    if any(par .> 3.0)
-        lp = -Inf64
-    else
-        # Parameters for the ODE
-        odeparams = exp.(par)
+#         # Terms in the log log likelihood function
+#         ll_haz = sum(log.(OUT[1, status]))
 
-        sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
-        OUT = sol(df.time)
+#         ll_chaz = sum(OUT[3, :])
 
-        # Terms in the log log likelihood function
-        ll_haz = sum(OUT[1, status])
+#         # log prior
+#         l_prior = sum(logpdf.(distprior, odeparams))
 
-        ll_chaz = sum(OUT[3,:])
+#         # log-Jacobian
+#         l_JAC = sum(par)
 
-        # log prior
-        l_prior = sum(logpdf.(distprior, odeparams))
-
-        # log-Jacobian
-        l_JAC = sum(par)
-
-        lp = ll_haz - ll_chaz + l_prior + l_JAC
-    end
-    return lp
-end
-
-MLE = vec(readdlm("MLE.txt"))
-log_post(MLE) #-4785.3241550528965
-log_postL(MLE) #-4785.308725489181
-
-# Run NMC iterations of the Adaptive Metropolis:
-
-NMC = 75000
-Random.seed!(123)
-out = adaptive_rwm(MLE, log_post, NMC; algorithm=:ram)
-
-# Run NMC iterations of the Adaptive Metropolis:
-#init0 = MLER
-
-#NMC = 75000
-#Random.seed!(1234)
-#out = adaptive_rwm(initmle, log_postL, NMC; algorithm=:am)
-
-# Calculate '95% credible intervals':
-
-mapslices(x -> "$(mean(x)) ± $(1.96std(x))", out.X, dims=2)
+#         lp = ll_haz - ll_chaz + l_prior + l_JAC
+#     end
+#     return lp
+# end
 
 
-hcat(MLE,vec(mean(out.X,dims=2)))
+# # Log-posterior (log h and log q)
+# log_postL = function (par::Vector{Float64})
+#     if any(par .> 3.0)
+#         lp = -Inf64
+#     else
+#         # Parameters for the ODE
+#         odeparams = exp.(par)
 
-burn = 1
-thin = 50
+#         sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
+#         OUT = sol(df.time)
 
-h1a = histogram(exp.(out.X[1, burn:thin:end]))
-h2a = histogram(exp.(out.X[2, burn:thin:end]))
-h3a = histogram(exp.(out.X[3, burn:thin:end]))
-h4a = histogram(exp.(out.X[4, burn:thin:end]))
+#         # Terms in the log log likelihood function
+#         ll_haz = sum(OUT[1, status])
+
+#         ll_chaz = sum(OUT[3,:])
+
+#         # log prior
+#         l_prior = sum(logpdf.(distprior, odeparams))
+
+#         # log-Jacobian
+#         l_JAC = sum(par)
+
+#         lp = ll_haz - ll_chaz + l_prior + l_JAC
+#     end
+#     return lp
+# end
+
+# MLE = vec(readdlm("MLE.txt"))
+# log_post(MLE) #-4785.3241550528965
+# log_postL(MLE) #-4785.308725489181
+
+# # Run NMC iterations of the Adaptive Metropolis:
+
+# NMC = 75000
+# Random.seed!(123)
+# out = adaptive_rwm(MLE, log_post, NMC; algorithm=:ram)
+
+# # Run NMC iterations of the Adaptive Metropolis:
+# #init0 = MLER
+
+# #NMC = 75000
+# #Random.seed!(1234)
+# #out = adaptive_rwm(initmle, log_postL, NMC; algorithm=:am)
+
+# # Calculate '95% credible intervals':
+
+# mapslices(x -> "$(mean(x)) ± $(1.96std(x))", out.X, dims=2)
 
 
-plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
+# hcat(MLE,vec(mean(out.X,dims=2)))
+
+# burn = 1
+# thin = 50
+
+# h1a = histogram(exp.(out.X[1, burn:thin:end]))
+# h2a = histogram(exp.(out.X[2, burn:thin:end]))
+# h3a = histogram(exp.(out.X[3, burn:thin:end]))
+# h4a = histogram(exp.(out.X[4, burn:thin:end]))
 
 
-tp1a = plot(out.X[1, burn:thin:end])
-tp2a = plot(out.X[2, burn:thin:end])
-tp3a = plot(out.X[3, burn:thin:end])
-tp4a = plot(out.X[4, burn:thin:end])
+# plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
 
 
-plot(tp1a, tp2a, tp3a, tp4a, layout=(3, 3), legend=false)
-
-# Save posterior samples
-postsamp = Tables.table(transpose(out.X[:, burn:thin:end]))
-
-CSV.write("postsamp.csv", postsamp)
+# tp1a = plot(out.X[1, burn:thin:end])
+# tp2a = plot(out.X[2, burn:thin:end])
+# tp3a = plot(out.X[3, burn:thin:end])
+# tp4a = plot(out.X[4, burn:thin:end])
 
 
+# plot(tp1a, tp2a, tp3a, tp4a, layout=(3, 3), legend=false)
 
+# # Save posterior samples
+# postsamp = Tables.table(transpose(out.X[:, burn:thin:end]))
 
-#= 
-**********************************************************************************
-MLE analysis
-**********************************************************************************
-=#
-
-#= 
-**********************************************************************************
-Posterior analysis
-**********************************************************************************
-=#
-
-#= Data =#
-postsamp = CSV.File("postsamp.csv");
-
-# Histograms
-h1a = histogram(postsamp.Column1)
-h2a = histogram(postsamp.Column2)
-h3a = histogram(postsamp.Column3)
-h4a = histogram(postsamp.Column4)
+# CSV.write("postsamp.csv", postsamp)
 
 
 
-plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
+
+# #= 
+# **********************************************************************************
+# MLE analysis
+# **********************************************************************************
+# =#
+
+# #= 
+# **********************************************************************************
+# Posterior analysis
+# **********************************************************************************
+# =#
+
+# #= Data =#
+# postsamp = CSV.File("postsamp.csv");
+
+# # Histograms
+# h1a = histogram(postsamp.Column1)
+# h2a = histogram(postsamp.Column2)
+# h3a = histogram(postsamp.Column3)
+# h4a = histogram(postsamp.Column4)
+
+
+
+# plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
 
 
 #=
@@ -423,12 +423,30 @@ distprior = Gamma(2,2)
 Random.seed!(123)
 
 model = bayesian_model(times, status)
-NMC = 5500
-burn = 500
-thin = 10
+NMC = 55000
+burn = 5000
+thin = 100
 
 chain = sample(model, NUTS(), NMC)
-burned_chain = Chains(chain[burn+1:end; thin=thin]) #returns an error
+#burned_chain = Chains(chain[burn+1:end; thin=thin]) #returns an error
 
 # Optionally, plot the results
-plot(burned_chain)
+#plot(burned_chain)
+
+
+h1a = histogram(chain.value[ burn:thin:end,1])
+h2a = histogram(chain.value[ burn:thin:end,2])
+h3a = histogram(chain.value[ burn:thin:end,3])
+h4a = histogram(chain.value[ burn:thin:end,4])
+
+
+
+plot(h1a, h2a, h3a, h4a, layout=(2, 2), legend=false)
+
+tp1a = plot(chain.value[ burn:thin:end,1])
+tp2a = plot(chain.value[ burn:thin:end,2])
+tp3a = plot(chain.value[ burn:thin:end,3])
+tp4a = plot(chain.value[ burn:thin:end,4])
+
+
+plot(tp1a, tp2a, tp3a, tp4a, layout=(2, 2), legend=false)
