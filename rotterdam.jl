@@ -391,35 +391,38 @@ Turing for posterior sampling
 =#
 using Turing, MCMCChains, StatsPlots, Distributions
 
-# define the log-posterior function as a Turing model:
-@model function bayesian_model(times, status, distprior)
-    # prior
-    par ~ filldist(Gamma(2, 2), 4)
+distprior = Gamma(2,2)
 
-    if any(par .> 3.0)
-        Turing.@addlogprob! -Inf #Skip this sample
-    else
-        odeparams = exp.(par)
+# define the log-posterior function as a Turing model:
+@model function bayesian_model(times, status)
+    # prior (defined on the positive parameters)
+    # odeparams = exp.(par)
+   odeparams ~ filldist(Gamma(2, 2), 4)
+
+    # if any(par .> 3.0)
+    #     Turing.@addlogprob! -Inf #Skip this sample
+    # else
+        
         prob = ODEProblem(HazRespL, lu0, (0.0, tmax), odeparams)
         sol = solve(prob; alg_hints=[:stiff])
         OUT = sol(times)
 
         ll_haz = sum(OUT[1, status .== 1])
         ll_chaz = sum(OUT[3, :])
-        l_prior = sum(logpdf.(distprior, odeparams))
-        l_JAC = sum(par)
+         l_prior = sum(logpdf.(distprior, odeparams))
+        # l_JAC = sum(par)
 
         # for loop?
         
-        lp = ll_haz - ll_chaz + l_prior + l_JAC
+        lp = ll_haz - ll_chaz + l_prior
         Turing.@addlogprob! lp
     end
-end
+
 
 # Run the MCMC sampler
 Random.seed!(123)
 
-model = bayesian_model(times, status, distprior)
+model = bayesian_model(times, status)
 NMC = 5500
 burn = 500
 thin = 10
