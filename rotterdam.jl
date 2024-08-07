@@ -236,9 +236,9 @@ initmle = [0.5381167, -2.3121004, 1.9444865, 1.5792623]
 
 optimiser = optimize(mlog_lik, initmle * 0.0, method=NelderMead(), iterations=10000)
 
-MLE = optimiser.minimizer # the optimal parameter values for lambda, kappa, alpha, beta
+logMLE = optimiser.minimizer # the optimal parameter values for log(lambda, kappa, alpha, beta)
 # Save MLE
-writedlm("MLE.txt", optimiser.minimizer)
+writedlm("logMLE.txt", optimiser.minimizer)
 
 #=
 ****************************************************************************
