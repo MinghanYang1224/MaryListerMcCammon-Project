@@ -424,9 +424,6 @@ thin = 100
 chain = sample(model, NUTS(), NMC; init_params=MLE)
 #burned_chain = Chains(chain[burn+1:end; thin=thin]) #returns an error
 
-# Optionally, plot the results
-#plot(burned_chain)
-
 
 h1a = histogram(chain.value[ burn:thin:end,1])
 h2a = histogram(chain.value[ burn:thin:end,2])
