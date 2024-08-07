@@ -237,9 +237,11 @@ initmle = [0.5381167, -2.3121004, 1.9444865, 1.5792623]
 optimiser = optimize(mlog_lik, initmle * 0.0, method=NelderMead(), iterations=10000)
 
 logMLE = optimiser.minimizer # the optimal parameter values for log(lambda, kappa, alpha, beta)
+MLE = exp.(logMLE)
+
 # Save MLE
 writedlm("logMLE.txt", optimiser.minimizer)
-
+writedlm("MLE.txt", MLE)
 #=
 ****************************************************************************
 Log-posterior functions -- TO BE CORRECTED and COMPARED
