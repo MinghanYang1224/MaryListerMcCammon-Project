@@ -546,3 +546,16 @@ plot(t_vector, Post_S, label="Predictive Survival", lw=2, ylim=(0,1))
 xlabel!("time")
 ylabel!("Predictive Survival Function")
 title!("Posterior Predictive Survival")
+
+# Compare with Kaplan-Meier estimator
+using Survival
+km = fit(KaplanMeier, df.time, df.status)
+ktimes = sort(unique(times))
+ksurvival_probs = km.survival
+
+# Comparison
+plot(ktimes, ksurvival_probs,
+    xlabel = "Time (years)", ylabel = "Survival", title = "Kaplan-Meier VS Posterior Predictive Survival",
+  xlims = (0.0001,maximum(times)),   xticks = 0:2:maximum(times), label = "", linewidth=3,
+  linecolor = "gray", ylims = (0,1), linestyle=:solid)
+plot!(t_vector, Post_S, label="Predictive Survival", lw=2)
