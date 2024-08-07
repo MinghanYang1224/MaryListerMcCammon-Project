@@ -522,6 +522,19 @@ function PredHR(t)
     # returns the predictive hazard function evaluated at time t
 end
 
+# Predictive survival:
+function PredSurv(t)
+    OUT = zeros(Float64, M, 3) # M times 3 matrix of zeros.
+    for i in 1:M
+        sol = solve(ODEProblem(HRJ, u0, t, postsamples[:,i]), Tsit5())
+        OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
+    end
+
+    SPred = mean(exp.(-OUT[:,3]))
+    return SPred 
+    # returns the predictive hazard function evaluated at time t
+end
+
 t_vector = [0.01:0.1:20.5;]
 nt = length(t_vector)
 
@@ -530,8 +543,19 @@ for i in 1:nt
     Predictive_hazard[i] = PredHR(t_vector[i])
 end
 
-Predictive_hazard
+Post_S = zeros(nt)
+for i in 1:nt
+    Post_S[i] = PredSurv(t_vector[i])
+end
 
+# Plot the posterior predictive hazard
 plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2)
 xlabel!("time")
 ylabel!("Predictive Hazard Function")
+title!("Posterior Predictive Hazard")
+
+# Plot the posterior predictive survival
+plot(t_vector, Post_S, label="Predictive Survival", lw=2)
+xlabel!("time")
+ylabel!("Predictive Survival Function")
+title!("Posterior Predictive Survival")
