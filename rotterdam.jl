@@ -398,13 +398,8 @@ distprior = Gamma(2,2)
 
 # define the log-posterior function as a Turing model:
 @model function bayesian_model(times, status)
-    # prior (defined on the positive parameters)
-    # odeparams = exp.(par)
-   odeparams ~ filldist(distprior, 4)
 
-    # if any(par .> 3.0)
-    #     Turing.@addlogprob! -Inf #Skip this sample
-    # else
+   odeparams ~ filldist(distprior, 4)
         
         prob = ODEProblem(HazRespL, lu0, (0.0, tmax), odeparams)
         sol = solve(prob; alg_hints=[:stiff])
@@ -412,12 +407,7 @@ distprior = Gamma(2,2)
 
         ll_haz = sum(OUT[1, status .== 1])
         ll_chaz = sum(OUT[3, :])
-        # l_prior = sum(logpdf.(distprior, odeparams))
-        # l_JAC = sum(par)
 
-        # for loop?
-        
-#        lp = ll_haz - ll_chaz + l_prior
         lp = ll_haz - ll_chaz 
         Turing.@addlogprob! lp
     end
