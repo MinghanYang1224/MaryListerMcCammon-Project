@@ -431,7 +431,7 @@ NMC = 110000
 burn = 10000
 thin = 100
 
-chain = sample(model, NUTS(), NMC; init_params=exp.(MLE))
+chain = sample(model, NUTS(), NMC; init_params=MLE)
 #burned_chain = Chains(chain[burn+1:end; thin=thin]) #returns an error
 
 # Optionally, plot the results
