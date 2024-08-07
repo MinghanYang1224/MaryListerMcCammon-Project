@@ -536,13 +536,13 @@ for i in 1:nt
 end
 
 # Plot the posterior predictive hazard
-plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2)
+plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.09))
 xlabel!("time")
 ylabel!("Predictive Hazard Function")
 title!("Posterior Predictive Hazard")
 
 # Plot the posterior predictive survival
-plot(t_vector, Post_S, label="Predictive Survival", lw=2)
+plot(t_vector, Post_S, label="Predictive Survival", lw=2, ylim=(0,1))
 xlabel!("time")
 ylabel!("Predictive Survival Function")
 title!("Posterior Predictive Survival")
