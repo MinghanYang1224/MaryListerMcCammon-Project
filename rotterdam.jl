@@ -462,5 +462,41 @@ postsamp = Tables.table(transpose(chain.value[ burn:thin:end,1:4]))
 
 CSV.write("postsamp.csv", postsamp)
 
+# Plot the marginal posterior distributions of the parameters. 
+# Function to plot posterior and prior for a parameter
+using StatsPlots, DataFrames
+postsamples = CSV.read("postsamp.csv", DataFrame)
+
+function plot_posterior_with_prior(postsamples, priors, param_idx, param_name, x_range)
+    posterior_samples = postsamples[param_idx,:]
+    prior = priors[param_idx]
+    
+    prior_pdf = pdf.(prior, x_range)
+
+    # Plot
+    density(Vector(posterior_samples), normalize=true, label="Posterior", legend=:topright)
+    #histogram(posterior_samples, normalize=true, bins=30, label="Posterior", alpha=0.6)
+    plot!(x_range, prior_pdf, label="Prior", lw=2)
+    xlabel!(param_name)
+    ylabel!("Density")
+    title!("Posterior and Prior for $param_name")
+end
+
+# Plotting each parameter
+param_names = ["lambda", "kappa", "alpha", "beta"]
+priors = [Gamma(2, 2) for _ in 1:4]
+# define ranges in x axis for the four plots:
+x_ranges = [
+    range(0, stop=6, length=1000),  # for lambda
+    range(0, stop=0.5, length=1000),  # for kappa
+    range(0, stop=11, length=1000),  # for alpha
+    range(0, stop=10, length=1000)   # for beta
+]
+# Plot
+plot_list = [plot_posterior_with_prior(postsamples, priors, i, param_names[i], x_ranges[i]) for i in 1:4]
+# Display the plots
+plot(plot_list..., layout=(2, 2), size = (1000,800))
+
 # To be discussed
 using MCMCDiagnosticTools
+
