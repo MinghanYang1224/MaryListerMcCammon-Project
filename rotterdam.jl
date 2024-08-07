@@ -500,3 +500,38 @@ plot(plot_list..., layout=(2, 2), size = (1000,800))
 # To be discussed
 using MCMCDiagnosticTools
 
+#=
+**********************************************************************************
+Predictive Hazard Function
+**********************************************************************************
+=#
+
+# Number of posterior samples
+M = ncol(postsamples)
+
+# Predictive hazard:
+function PredHR(t)
+    OUT = zeros(Float64, M, 3) # M times 3 matrix of zeros.
+    for i in 1:M
+        sol = solve(ODEProblem(HRJ, u0, t, postsamples[:,i]), Tsit5())
+        OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
+    end
+
+    hPred = mean(exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3]))
+    return hPred 
+    # returns the predictive hazard function evaluated at time t
+end
+
+t_vector = [0.01:0.1:20.5;]
+nt = length(t_vector)
+
+Predictive_hazard = zeros(nt)
+for i in 1:nt
+    Predictive_hazard[i] = PredHR(t_vector[i])
+end
+
+Predictive_hazard
+
+plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2)
+xlabel!("time")
+ylabel!("Predictive Hazard Function")
