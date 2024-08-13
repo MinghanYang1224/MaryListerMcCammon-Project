@@ -222,6 +222,27 @@ mlog_likL = function (par::Vector{Float64})
 end
 
 
+#  log likelihood function (log h and log q)
+log_likL = function (par)
+    # Parameters for the ODE
+    odeparams = exp.(par)
+
+
+    sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
+    #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]),Tsit5())
+    OUT = sol(df.time)
+
+
+    # Terms in the log log likelihood function
+    ll_haz = sum(OUT[1, status])
+
+    ll_chaz = sum(OUT[3, :])
+
+
+    ll = ll_haz - ll_chaz
+
+return ll
+end
 
 #= 
 **********************************************************************************
@@ -242,149 +263,6 @@ MLE = exp.(logMLE)
 # Save MLE
 writedlm("logMLE.txt", optimiser.minimizer)
 writedlm("MLE.txt", MLE)
-#=
-****************************************************************************
-Log-posterior functions -- TO BE CORRECTED and COMPARED
-****************************************************************************
-=#
-
-
-# # Priors
-# distprior = Gamma(2,2)
-
-# # Log-posterior
-# log_post = function (par::Vector{Float64})
-#     if any(par .> 3.0)
-#         lp = -Inf64
-#     else
-#         # Parameters for the ODE
-#         odeparams = exp.(par)
-
-#         sol = solve(ODEProblem(HRJ, u0, [0.0, tmax], odeparams); alg_hints=[:stiff])
-#         #     sol = solve(ODEProblem(HRJ, u0, tspan0[i, :], odeparams[i, :]), Tsit5())
-#         OUT = sol(df.time)
-
-
-#         # Terms in the log log likelihood function
-#         ll_haz = sum(log.(OUT[1, status]))
-
-#         ll_chaz = sum(OUT[3, :])
-
-#         # log prior
-#         l_prior = sum(logpdf.(distprior, odeparams))
-
-#         # log-Jacobian
-#         l_JAC = sum(par)
-
-#         lp = ll_haz - ll_chaz + l_prior + l_JAC
-#     end
-#     return lp
-# end
-
-
-# # Log-posterior (log h and log q)
-# log_postL = function (par::Vector{Float64})
-#     if any(par .> 3.0)
-#         lp = -Inf64
-#     else
-#         # Parameters for the ODE
-#         odeparams = exp.(par)
-
-#         sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
-#         OUT = sol(df.time)
-
-#         # Terms in the log log likelihood function
-#         ll_haz = sum(OUT[1, status])
-
-#         ll_chaz = sum(OUT[3,:])
-
-#         # log prior
-#         l_prior = sum(logpdf.(distprior, odeparams))
-
-#         # log-Jacobian
-#         l_JAC = sum(par)
-
-#         lp = ll_haz - ll_chaz + l_prior + l_JAC
-#     end
-#     return lp
-# end
-
-# MLE = vec(readdlm("MLE.txt"))
-# log_post(MLE) #-4785.3241550528965
-# log_postL(MLE) #-4785.308725489181
-
-# # Run NMC iterations of the Adaptive Metropolis:
-
-# NMC = 75000
-# Random.seed!(123)
-# out = adaptive_rwm(MLE, log_post, NMC; algorithm=:ram)
-
-# # Run NMC iterations of the Adaptive Metropolis:
-# #init0 = MLER
-
-# #NMC = 75000
-# #Random.seed!(1234)
-# #out = adaptive_rwm(initmle, log_postL, NMC; algorithm=:am)
-
-# # Calculate '95% credible intervals':
-
-# mapslices(x -> "$(mean(x)) ± $(1.96std(x))", out.X, dims=2)
-
-
-# hcat(MLE,vec(mean(out.X,dims=2)))
-
-# burn = 1
-# thin = 50
-
-# h1a = histogram(exp.(out.X[1, burn:thin:end]))
-# h2a = histogram(exp.(out.X[2, burn:thin:end]))
-# h3a = histogram(exp.(out.X[3, burn:thin:end]))
-# h4a = histogram(exp.(out.X[4, burn:thin:end]))
-
-
-# plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
-
-
-# tp1a = plot(out.X[1, burn:thin:end])
-# tp2a = plot(out.X[2, burn:thin:end])
-# tp3a = plot(out.X[3, burn:thin:end])
-# tp4a = plot(out.X[4, burn:thin:end])
-
-
-# plot(tp1a, tp2a, tp3a, tp4a, layout=(3, 3), legend=false)
-
-# # Save posterior samples
-# postsamp = Tables.table(transpose(out.X[:, burn:thin:end]))
-
-# CSV.write("postsamp.csv", postsamp)
-
-
-
-
-# #= 
-# **********************************************************************************
-# MLE analysis
-# **********************************************************************************
-# =#
-
-# #= 
-# **********************************************************************************
-# Posterior analysis
-# **********************************************************************************
-# =#
-
-# #= Data =#
-# postsamp = CSV.File("postsamp.csv");
-
-# # Histograms
-# h1a = histogram(postsamp.Column1)
-# h2a = histogram(postsamp.Column2)
-# h3a = histogram(postsamp.Column3)
-# h4a = histogram(postsamp.Column4)
-
-
-
-# plot(h1a, h2a, h3a, h4a, layout=(3, 3), legend=false)
 
 
 #=
@@ -396,37 +274,46 @@ using Turing, MCMCChains, StatsPlots, Distributions
 
 distprior = Gamma(2,2)
 
+# # define the log-posterior function as a Turing model:
+# @model function bayesian_model(times, status)
+#     # prior (defined on the positive parameters)
+#     # odeparams = exp.(par)
+#    odeparams ~ filldist(distprior, 4)
+
+#     # if any(par .> 3.0)
+#     #     Turing.@addlogprob! -Inf #Skip this sample
+#     # else
+        
+#         prob = ODEProblem(HazRespL, lu0, (0.0, tmax), odeparams)
+#         sol = solve(prob; alg_hints=[:stiff])
+#         OUT = sol(times)
+
+#         ll_haz = sum(OUT[1, status .== 1])
+#         ll_chaz = sum(OUT[3, :])
+#         # l_prior = sum(logpdf.(distprior, odeparams))
+#         # l_JAC = sum(par)
+
+#         # for loop?
+        
+# #        lp = ll_haz - ll_chaz + l_prior
+#         lp = ll_haz - ll_chaz 
+#         Turing.@addlogprob! lp
+#     end
+
 # define the log-posterior function as a Turing model:
-@model function bayesian_model(times, status)
+@model function bayesian_model(log_likL)
     # prior (defined on the positive parameters)
-    # odeparams = exp.(par)
    odeparams ~ filldist(distprior, 4)
+        params = log.(odeparams)
 
-    # if any(par .> 3.0)
-    #     Turing.@addlogprob! -Inf #Skip this sample
-    # else
-        
-        prob = ODEProblem(HazRespL, lu0, (0.0, tmax), odeparams)
-        sol = solve(prob; alg_hints=[:stiff])
-        OUT = sol(times)
-
-        ll_haz = sum(OUT[1, status .== 1])
-        ll_chaz = sum(OUT[3, :])
-        # l_prior = sum(logpdf.(distprior, odeparams))
-        # l_JAC = sum(par)
-
-        # for loop?
-        
-#        lp = ll_haz - ll_chaz + l_prior
-        lp = ll_haz - ll_chaz 
-        Turing.@addlogprob! lp
+        Turing.@addlogprob!(log_likL(params))
     end
-
 
 # Run the MCMC sampler
 Random.seed!(123)
 
-model = bayesian_model(times, status)
+#model = bayesian_model(times, status)
+model = bayesian_model(log_likL)
 NMC = 110000
 burn = 10000
 thin = 100
