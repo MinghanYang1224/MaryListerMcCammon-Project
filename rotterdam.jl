@@ -64,8 +64,6 @@ Some numerical analysis
 =#
 
 
-#initmle = zeros(7)
-
 initmle = [0.5381167, -2.3121004, 1.9444865, 1.5792623]
 
 optimiser = optimize(mlog_lik, initmle * 0.0, method=NelderMead(), iterations=10000)
@@ -94,11 +92,9 @@ burn = 10000
 thin = 100
 
 chain = sample(model, NUTS(), NMC; init_params=MLE)
-#burned_chain = Chains(chain[burn+1:end; thin=thin]) #returns an error
 
-# Optionally, plot the results
-#plot(burned_chain)
 
+# Summaries
 
 h1a = histogram(chain.value[ burn:thin:end,1])
 h2a = histogram(chain.value[ burn:thin:end,2])
