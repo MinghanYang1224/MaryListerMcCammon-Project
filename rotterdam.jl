@@ -485,7 +485,7 @@ plot_list = [plot_posterior_with_prior(postsamples, priors, i, param_names[i], x
 plot(plot_list..., layout=(2, 2), size = (1000,800))
 
 # To be discussed
-using MCMCDiagnosticTools
+#using MCMCDiagnosticTools
 
 #=
 **********************************************************************************
@@ -505,7 +505,22 @@ function PredHR(t)
     end
 
     hPred = mean(exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3]))
-    return hPred 
+    hPredU = quantile( ((exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3]))), 0.975)
+    hPredL = quantile( ((exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3]))), 0.025)
+    return hPred, hPredU, hPredL
+    # returns the predictive hazard function evaluated at time t
+end
+
+# Predictive response:
+function PredResp(t)
+    OUT = zeros(Float64, M, 3) # M times 3 matrix of zeros.
+    for i in 1:M
+        sol = solve(ODEProblem(HRJ, u0, t, postsamples[:,i]), Tsit5())
+        OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
+    end
+
+    RespPred = mean(OUT[:,2])
+    return RespPred
     # returns the predictive hazard function evaluated at time t
 end
 
@@ -518,7 +533,9 @@ function PredSurv(t)
     end
 
     SPred = mean(exp.(-OUT[:,3]))
-    return SPred 
+    SPredU = quantile(exp.(-OUT[:,3]), 0.975)
+    SPredL = quantile(exp.(-OUT[:,3]), 0.025)
+    return SPred, SPredU, SPredL
     # returns the predictive hazard function evaluated at time t
 end
 
@@ -526,13 +543,26 @@ t_vector = [0.01:0.1:20.5;]
 nt = length(t_vector)
 
 Predictive_hazard = zeros(nt)
+Predictive_hazardU = zeros(nt)
+Predictive_hazardL = zeros(nt)
 for i in 1:nt
-    Predictive_hazard[i] = PredHR(t_vector[i])
+    Predictive_hazard[i] = PredHR(t_vector[i])[1]
+    Predictive_hazardU[i] = PredHR(t_vector[i])[2]
+    Predictive_hazardL[i] = PredHR(t_vector[i])[3]
+end
+
+Predictive_response = zeros(nt)
+for i in 1:nt
+    Predictive_response[i] = PredResp(t_vector[i])
 end
 
 Post_S = zeros(nt)
+Post_SU = zeros(nt)
+Post_SL = zeros(nt)
 for i in 1:nt
-    Post_S[i] = PredSurv(t_vector[i])
+    Post_S[i] = PredSurv(t_vector[i])[1]
+    Post_SU[i] = PredSurv(t_vector[i])[2]
+    Post_SL[i] = PredSurv(t_vector[i])[3]
 end
 
 # Plot the posterior predictive hazard
@@ -540,6 +570,13 @@ plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.09)
 xlabel!("time")
 ylabel!("Predictive Hazard Function")
 title!("Posterior Predictive Hazard")
+
+# Plot the posterior predictive hazard and response
+plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.13))
+plot!(t_vector, Predictive_response, label="Predictive Response", lw=2)
+xlabel!("time")
+ylabel!("Predictive Functions")
+title!("Posterior Predictive Functions")
 
 # Plot the posterior predictive survival
 plot(t_vector, Post_S, label="Predictive Survival", lw=2, ylim=(0,1))
@@ -559,3 +596,17 @@ plot(ktimes, ksurvival_probs,
   xlims = (0.0001,maximum(times)),   xticks = 0:2:maximum(times), label = "", linewidth=3,
   linecolor = "gray", ylims = (0,1), linestyle=:solid)
 plot!(t_vector, Post_S, label="Predictive Survival", lw=2)
+
+# Add credible intervals to predictive hazard and predictive survival
+plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.09))
+plot!(t_vector, Predictive_hazardU, fillrange=Predictive_hazardL, fillalpha=0.3, label="95% CI", color=:grey)
+xlabel!("time")
+ylabel!("Predictive Hazard Function")
+title!("Posterior Predictive Hazard")
+
+
+plot(t_vector, Post_S, label="Predictive Survival", lw=2, ylim=(0,1))
+plot!(t_vector, Post_SU, fillrange=Post_SL, fillalpha=0.3, label="95% CI", color=:grey)
+xlabel!("time")
+ylabel!("Predictive Survival Function")
+title!("Posterior Predictive Survival")
