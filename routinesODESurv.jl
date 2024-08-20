@@ -198,3 +198,52 @@ function plot_posterior_with_prior(postsamples, priors, param_idx, param_name, x
     ylabel!("Density")
     title!("Posterior and Prior for $param_name")
 end
+
+#=
+**********************************************************************************
+Predictive Hazard Function
+**********************************************************************************
+=#
+
+# Predictive hazard:
+function PredHR(t)
+    OUT = zeros(Float64, M, 3) # M times 3 matrix of zeros.
+    for i in 1:M
+        sol = solve(ODEProblem(HRJ, u0, t, postsamples[:,i]), Tsit5())
+        OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
+    end
+
+    hPred = mean(exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3]))
+    hPredU = quantile( OUT[:,1], 0.975)
+    hPredL = quantile( OUT[:,1], 0.025)
+    return hPred, hPredU, hPredL
+    # returns the predictive hazard function evaluated at time t
+end
+
+# Predictive response:
+function PredResp(t)
+    OUT = zeros(Float64, M, 3) # M times 3 matrix of zeros.
+    for i in 1:M
+        sol = solve(ODEProblem(HRJ, u0, t, postsamples[:,i]), Tsit5())
+        OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
+    end
+
+    RespPred = mean(OUT[:,2])
+    return RespPred
+    # returns the predictive hazard function evaluated at time t
+end
+
+# Predictive survival:
+function PredSurv(t)
+    OUT = zeros(Float64, M, 3) # M times 3 matrix of zeros.
+    for i in 1:M
+        sol = solve(ODEProblem(HRJ, u0, t, postsamples[:,i]), Tsit5())
+        OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
+    end
+
+    SPred = mean(exp.(-OUT[:,3]))
+    SPredU = quantile(exp.(-OUT[:,3]), 0.975)
+    SPredL = quantile(exp.(-OUT[:,3]), 0.025)
+    return SPred, SPredU, SPredL
+    # returns the predictive hazard function evaluated at time t
+end
