@@ -224,13 +224,13 @@ plot!(t_vector, Pred_S, label="Predictive Survival", lw=2)
 
 # Add credible intervals to predictive hazard and predictive survival
 plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.09))
-plot!(t_vector, Predictive_hazardU, fillrange=Predictive_hazardL, fillalpha=0.3, label="95% CI", color=:grey)
+plot!(t_vector, Predictive_hazardU, fillrange=Predictive_hazardL, fillalpha=0.3, label="95% CI", color=:grey, linecolor=:transparent)
 xlabel!("time")
 ylabel!("Predictive Hazard Function")
 title!("Posterior Predictive Hazard")
 
 plot(t_vector, Pred_S, label="Predictive Survival", lw=2, ylim=(0,1))
-plot!(t_vector, Pred_SU, fillrange=Post_SL, fillalpha=0.3, label="95% CI", color=:grey)
+plot!(t_vector, Pred_SU, fillrange=Post_SL, fillalpha=0.3, label="95% CI", color=:grey, linecolor=:transparent)
 xlabel!("time")
 ylabel!("Predictive Survival Function")
 title!("Posterior Predictive Survival")
