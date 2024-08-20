@@ -183,7 +183,7 @@ distprior = Gamma(2,2)
         Turing.@addlogprob!(log_likL(params))
     end
 
-    
+# define a function for plotting posterior vs prior:
 function plot_posterior_with_prior(postsamples, priors, param_idx, param_name, x_range)
     posterior_samples = postsamples[param_idx,:]
     prior = priors[param_idx]
