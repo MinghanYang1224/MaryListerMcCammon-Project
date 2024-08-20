@@ -182,3 +182,19 @@ distprior = Gamma(2,2)
 
         Turing.@addlogprob!(log_likL(params))
     end
+
+    
+function plot_posterior_with_prior(postsamples, priors, param_idx, param_name, x_range)
+    posterior_samples = postsamples[param_idx,:]
+    prior = priors[param_idx]
+    
+    prior_pdf = pdf.(prior, x_range)
+
+    # Plot
+    density(Vector(posterior_samples), normalize=true, label="Posterior", legend=:topright)
+    #histogram(posterior_samples, normalize=true, bins=30, label="Posterior", alpha=0.6)
+    plot!(x_range, prior_pdf, label="Prior", lw=2)
+    xlabel!(param_name)
+    ylabel!("Density")
+    title!("Posterior and Prior for $param_name")
+end
