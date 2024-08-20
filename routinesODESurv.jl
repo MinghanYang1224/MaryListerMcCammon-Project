@@ -172,6 +172,12 @@ log_likL = function (par)
 return ll
 end
 
+
+#=
+**********************************************************************************
+Turing for posterior sampling
+**********************************************************************************
+=#
 # define the log-posterior function as a Turing model:
 distprior = Gamma(2,2)
 
@@ -213,11 +219,11 @@ function PredHR(t)
         OUT[i,:] = reduce(vcat, sol.u[end,:]) # take the values of the three functions at the last time point t
     end
 
-    hPred = mean(exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3]))
-    hPredU = quantile( OUT[:,1], 0.975)
-    hPredL = quantile( OUT[:,1], 0.025)
+    hPred = mean(exp.(-OUT[:,3]) .* OUT[:,1]) / mean(exp.(-OUT[:,3])) # the predictive hazard function evaluated at time t
+    hPredU = quantile( OUT[:,1], 0.975) # the upper bound for 95% credible interval
+    hPredL = quantile( OUT[:,1], 0.025) # the lower bound for 95% credible interval
     return hPred, hPredU, hPredL
-    # returns the predictive hazard function evaluated at time t
+    
 end
 
 # Predictive response:
@@ -242,8 +248,8 @@ function PredSurv(t)
     end
 
     SPred = mean(exp.(-OUT[:,3]))
-    SPredU = quantile(exp.(-OUT[:,3]), 0.975)
-    SPredL = quantile(exp.(-OUT[:,3]), 0.025)
+    SPredU = quantile(exp.(-OUT[:,3]), 0.975) # the upper bound for 95% credible interval
+    SPredL = quantile(exp.(-OUT[:,3]), 0.025) # the lower bound for 95% credible interval
     return SPred, SPredU, SPredL
     # returns the predictive hazard function evaluated at time t
 end
