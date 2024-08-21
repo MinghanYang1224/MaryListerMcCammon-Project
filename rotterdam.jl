@@ -23,7 +23,7 @@ using Sundials
 using ForwardDiff
 using StatsPlots
 using Turing
-using MCMCChains, MCMCDiagnosticTools
+using MCMCChains
 
 include("routinesODESurv.jl")
 
