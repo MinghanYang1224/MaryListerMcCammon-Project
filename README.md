@@ -10,7 +10,10 @@ The repository contains the following codes:
 
 1. `rotterdam.jl`: Julia code for ...
 2. `routinesODESurv.jl` contains ...
-3. * Describe all files *
+3. `rotterdamFull.csv`
+4. `MLE.txt` and `logMLE.txt`
+5. `postsamp.csv`
+6. 
 
 The 
 
@@ -18,7 +21,7 @@ See also [ODESurv](https://github.com/FJRubio67/ODESurv)
 
 # The Mary Lister McCammon Summer Research Fellowship
 
-This fellowship programme is a 10 week research project starting 1 July 2024 ...
+This fellowship programme is a 10 week research project from 1 July 2024 to 6 September 2024. 
  
 More information about the fellowship can be found at: [Link](https://www.imperial.ac.uk/mathematics/postgraduate/the-mary-lister-mccammon-summer-research-fellowship/)
 
