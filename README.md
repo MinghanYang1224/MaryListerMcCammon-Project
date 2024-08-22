@@ -9,10 +9,10 @@ The implementation of such models require the use of ODE Solvers ([`Differential
 The repository contains the following codes:
 
 1. `rotterdam.jl`: Julia code for ...
-2. `routinesODESurv.jl` contains ...
-3. `rotterdamFull.csv`
-4. `MLE.txt` and `logMLE.txt`
-5. `postsamp.csv`
+2. `routinesODESurv.jl` contains all the functions used in `rotterdam.jl`. 
+3. `rotterdamFull.csv` is the data set that contains information of breast cancer patients data for analysis. 
+4. `MLE.txt` and `logMLE.txt` are the maximum likelihood estimates of the parameters ($\lambda, \kappa, \alpha, \beta$) in original and logarithm scales respectively.
+5. `postsamp.csv` is a file of posterior samples using turing in `rotterdam.jl`. 
 6. 
 
 The 
