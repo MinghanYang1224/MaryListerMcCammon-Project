@@ -4,7 +4,7 @@ This repository contains Julia code and data associated to my Mary Lister McCamm
 
 > Christen, J. A., and Rubio, F. J. (2024+). Dynamic Survival Analysis: Modelling the Hazard Function via Ordinary Differential Equations. *Statistical Methods in Medical Research*, in press. https://doi.org/10.1177/09622802241268504
 
-The implementation of such models require the use of ODE Solvers ([`DifferentialEquations.jl`](https://docs.sciml.ai/DiffEqDocs/stable/)), as well as MCMC methods from [`Turing.jl`](https://github.com/TuringLang/Turing.jl).
+The implementation of such models required the use of ODE Solvers ([`DifferentialEquations.jl`](https://docs.sciml.ai/DiffEqDocs/stable/)), as well as MCMC methods from [`Turing.jl`](https://github.com/TuringLang/Turing.jl).
 
 The repository contains the following codes:
 
