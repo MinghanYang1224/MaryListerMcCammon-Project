@@ -21,8 +21,8 @@ See also [ODESurv](https://github.com/FJRubio67/ODESurv)
 
 # The Mary Lister McCammon Summer Research Fellowship
 
-This fellowship programme is a 10 week research project from 1 July 2024 to 6 September 2024, supported by the Engineering and Physical Sciences Research Council
-and by the Department of Mathematics at Imperial College London and University College London. The author would like to express deep gratitude to the sponsors of this project and her supervisor Dr Javier Rubio from Department of Statistics at University College London. His guidance and assistance have made this a fruitful, inspiring, and unforgettable experience.
+This fellowship programme is a 10 week research project from 1 July 2024 to 6 September 2024, supported by the Engineering and Physical Sciences Research Council and by the Department of Mathematics at Imperial College London and University College London. The author would like to express deep gratitude to the sponsors of this project and her supervisor Dr Javier Rubio from Department of Statistics at University College London. His guidance and assistance have made this a fruitful, inspiring, and unforgettable experience.
 
-More information about the fellowship can be found at: [Link](https://www.imperial.ac.uk/mathematics/postgraduate/the-mary-lister-mccammon-summer-research-fellowship/)
+More information about the fellowship can be found at: [The Mary Lister McCammon Summer Research Fellowship
+](https://www.imperial.ac.uk/mathematics/postgraduate/the-mary-lister-mccammon-summer-research-fellowship/)
 
