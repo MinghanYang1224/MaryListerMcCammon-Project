@@ -14,12 +14,9 @@ using Distributions
 using Random
 using AdaptiveMCMC
 using Tables
-using DelimitedFiles
 using Statistics
 using Survival
 using DataFrames
-using FreqTables
-using Sundials
 using ForwardDiff
 using StatsPlots
 using Turing
@@ -87,16 +84,20 @@ Turing for posterior sampling
 # Run the MCMC sampler
 Random.seed!(123)
 
-#model = bayesian_model(times, status)
+# define the model for turing
 model = bayesian_model(log_likL)
+
+# Total number of iterations:
 NMC = 110000
+# Number of burned samples
 burn = 10000
+# Thinning
 thin = 100
 
+# sampling using the NUTS() method. 
 chain = sample(model, NUTS(), NMC; init_params=MLE)
-
-
-# Summaries
+run(`afplay /System/Library/Sounds/Glass.aiff`)
+# Overview of the chain
 summarystats(chain)
 
 # Plot the histograms
@@ -116,6 +117,7 @@ tp4a = plot(chain.value[ burn:thin:end,4])
 
 plot(tp1a, tp2a, tp3a, tp4a, layout=(2, 2), legend=false)
 
+# compare with the MLE 
 hcat(MLE,vec(mean(chain.value[ burn:thin:end,1:4],dims=1)))
 
 # Save posterior samples
@@ -216,7 +218,8 @@ ksurvival_probs = km.survival
 # Comparison plot
 plot(ktimes, ksurvival_probs,
     xlabel = "Time (years)", ylabel = "Survival", title = "Kaplan-Meier VS Posterior Predictive Survival",
-  xlims = (0.0001,maximum(times)),   xticks = 0:2:maximum(times), label = "", linewidth=3,
+    label = "Kaplan-Meier",
+  xlims = (0.0001,maximum(times)),   xticks = 0:2:maximum(times), linewidth=3,
   linecolor = "gray", ylims = (0,1), linestyle=:solid)
 plot!(t_vector, Pred_S, label="Predictive Survival", lw=2)
 
@@ -230,7 +233,18 @@ ylabel!("Predictive Hazard Function")
 title!("Posterior Predictive Hazard")
 
 plot(t_vector, Pred_S, label="Predictive Survival", lw=2, ylim=(0,1))
-plot!(t_vector, Pred_SU, fillrange=Post_SL, fillalpha=0.3, label="95% CI", color=:grey, linecolor=:transparent)
+plot!(t_vector, Pred_SU, fillrange=Pred_SL, fillalpha=0.3, label="95% CI", color=:grey, linecolor=:transparent)
 xlabel!("time")
 ylabel!("Predictive Survival Function")
 title!("Posterior Predictive Survival")
+
+
+# Set threads to 8 in terminal using "julia --threads 8"
+begin
+    chain_parallel = sample(model, NUTS(), MCMCThreads(), 110000, 2; init_params=MLE) # four chains in parallel
+    summarystats(chain_parallel)
+end
+
+# time used: 0:08:10
+
+chain_parallel
