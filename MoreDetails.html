@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.52">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Minghan Yang">
+<meta name="dcterms.date" content="2024-08-27">
+
+<title>Documentation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="MoreDetails_files/libs/clipboard/clipboard.min.js"></script>
+<script src="MoreDetails_files/libs/quarto-html/quarto.js"></script>
+<script src="MoreDetails_files/libs/quarto-html/popper.min.js"></script>
+<script src="MoreDetails_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="MoreDetails_files/libs/quarto-html/anchor.min.js"></script>
+<link href="MoreDetails_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="MoreDetails_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="MoreDetails_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="MoreDetails_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="MoreDetails_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#survival-analysis-overview" id="toc-survival-analysis-overview" class="nav-link active" data-scroll-target="#survival-analysis-overview"><span class="header-section-number">1</span> Survival Analysis Overview</a>
+  <ul class="collapse">
+  <li><a href="#censoring" id="toc-censoring" class="nav-link" data-scroll-target="#censoring"><span class="header-section-number">1.1</span> Censoring</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="header-section-number">1.2</span> Functions</a></li>
+  </ul></li>
+  <li><a href="#hazard-response-model" id="toc-hazard-response-model" class="nav-link" data-scroll-target="#hazard-response-model"><span class="header-section-number">2</span> Hazard-Response Model</a></li>
+  <li><a href="#model-formulation-and-codes" id="toc-model-formulation-and-codes" class="nav-link" data-scroll-target="#model-formulation-and-codes"><span class="header-section-number">3</span> Model Formulation and Codes</a></li>
+  <li><a href="#bayesian-methods" id="toc-bayesian-methods" class="nav-link" data-scroll-target="#bayesian-methods"><span class="header-section-number">4</span> Bayesian Methods</a></li>
+  <li><a href="#turing" id="toc-turing" class="nav-link" data-scroll-target="#turing"><span class="header-section-number">5</span> Turing</a></li>
+  <li><a href="#predictive-hazard" id="toc-predictive-hazard" class="nav-link" data-scroll-target="#predictive-hazard"><span class="header-section-number">6</span> Predictive Hazard</a></li>
+  <li><a href="#some-results" id="toc-some-results" class="nav-link" data-scroll-target="#some-results"><span class="header-section-number">7</span> Some Results</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">8</span> Summary</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Documentation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Minghan Yang </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 27, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>including the hazard-response model description, and some of the key codes and plots to describe the processes. Yes, I think you can start with a description of the hazard response model (directly, without going into the general formulation of ODEs), followed by a discussion on how to fix the initial conditions. After that, you can follow the code and add any text of formulas before the code, simply to explain what are you calculating. For instance, presenting the general formula of the likelihood function and explaining that you need a solver. Then, followed by a description of the priors that you will use, and a reference to Turing.jl. Then, a little description of the predictive hazard, and a brief discussion of the summaries you will present. It does not need to be very extensive, just simply formulas that explain what you are running in each chunk of code.</p>
+<section id="survival-analysis-overview" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Survival Analysis Overview</h1>
+<p>Survival analysis is often used in areas such as biology, medicine, and engineering. For cancer studies, one typical topic is the survival of cancer patients after a diagnosis of cancer.</p>
+<p>The data used in survival analysis is often sample of from a population (<span class="math inline">\(t_1, t_2, \ldots, t_n\)</span>). in our project, we use the breast cancer patient data from hospitals in Rotterdam.</p>
+<ul>
+<li><p>Survival Time: The duration of time from a starting point (for example, diagnosis of a disease) to the occurrence of an event (e.g.&nbsp;death).</p></li>
+<li><p>Vital status (censoring indicators): <span class="math inline">\(\delta_1, \delta_2, \ldots, \delta_n\)</span>.</p>
+<p><span class="math inline">\(\delta_i=1\)</span>: death,</p>
+<p><span class="math inline">\(\delta_i=0\)</span>: alive / right-censored.</p></li>
+</ul>
+<p>In many studies, some subjects may not experience the event before the study ends, leading to censored data. Survival analysis methods can appropriately handle these censored observations. It helps estimate survival rates at different time points, which is vital for predicting and understanding the progression of diseases, patient outcomes, and the effectiveness of treatments.</p>
+<section id="censoring" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="censoring"><span class="header-section-number">1.1</span> Censoring</h2>
+<p>Censoring occurs when the exact time of the event is not known for some subjects. This happens for various reasons, such as the study ending before the event occurs, the subject withdrawing from the study, or loss to follow-up. For example, if a study ends before a patient dies or if a patient leaves the study early, their data is . If death, failure of a machine or relapse of a disease happens, then the data is an .</p>
+<ol type="1">
+<li><strong>Right Censoring</strong></li>
+</ol>
+<p>Right censoring occurs when the event of interest has not happened by the end of the study period for some subjects. We only know that the event time exceeds a certain value.</p>
+<p>Right-censoring is a common feature in survival data and must be appropriately handled to avoid bias in the analysis. Survival analysis techniques, like the Kaplan-Meier estimator and Cox proportional hazards model, are specifically designed to deal with right-censored data, allowing researchers to make valid inferences about the time-to-event process even when not all events are observed.</p>
+<ol start="2" type="1">
+<li><strong>Left Censoring</strong></li>
+</ol>
+<p>Left censoring happens when the event of interest has already occurred before the subject is observed or enters the study. We only know that the event time is less than a certain value.</p>
+<p>If a subject is left-censored at time <span class="math inline">\(t\)</span>, it means the event time <span class="math inline">\(T\)</span> is less than <span class="math inline">\(t\)</span>.</p>
+<ol start="3" type="1">
+<li><strong>Interval Censoring</strong></li>
+</ol>
+<p>Interval censoring occurs when the event time is known to lie within a specific interval but the exact time is unknown.</p>
+<ol start="4" type="1">
+<li><strong>Administrative Censoring</strong></li>
+</ol>
+<p>Administrative censoring refers to the situation where all subjects are censored at a predefined time point due to the end of the study.</p>
+<ol start="5" type="1">
+<li><strong>Random Censoring</strong></li>
+</ol>
+<p>Random censoring occurs when the censoring times are random and independent of the event times. For example, subjects dropping out of a study at random times due to various reasons such as relocation or withdrawal.</p>
+</section>
+<section id="functions" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="functions"><span class="header-section-number">1.2</span> Functions</h2>
+<ol type="1">
+<li><strong>Lifetime distribution function</strong></li>
+</ol>
+<p><span class="math display">\[\begin{equation}
+    F(t) = \mathbb{P}(T&lt;t), x\geq 0.
+\end{equation}\]</span> This function describes the probability of failing up age of t or of having a life span of at most t. <span class="math inline">\(F(t)\)</span> is a monotone and increasing function. <span class="math inline">\(0 \leq F(t) \leq 1\)</span>. The derivative of <span class="math inline">\(F(t)\)</span> is the corresponding PDF <span class="math inline">\(f(t)\)</span>.</p>
+<ol start="2" type="1">
+<li><strong>Survival function</strong></li>
+</ol>
+<p>The survival function is another representative of lifetime distribution. It is defined as <span class="math display">\[\begin{equation}
+    S(t)= \mathbb{P}(T&gt;t) = 1-F(t)=\mathbb{P}(T&gt;t)
+\end{equation}\]</span> The survival function is also known as the reliability function, indicating the probability of surviving a time of <span class="math inline">\(t\)</span>. It is the probability of exceeding time <span class="math inline">\(t\)</span>. The study of survival function is crucial in survival analysis.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li>The survival function <span class="math inline">\(S(t)\)</span> is monotone and decreasing over <span class="math inline">\([0, \infty)\)</span>. Furthermore, <span class="math inline">\(S(t)\)</span> satisfies <span class="math inline">\(S(0) = 1\)</span>, <span class="math inline">\(S(\infty) = 0\)</span>.</li>
+<li>The survival function is related to <span class="math inline">\(F(t)\)</span>: <span class="math inline">\(S(t)=1 - F(t)\)</span>.</li>
+<li>The survival function appropriately handles right-censored data. Censored observations contribute information up until the censoring time but not beyond it. This allows the survival function to provide unbiased estimates even when not all subjects have experienced the event by the end of the study.</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Hazard function</strong></li>
+</ol>
+<p>Hazard function is defined to be <span class="math display">\[h(t) = \lim_{ dt \to 0} \frac{\mathbb{P}[t \leq T \leq t + dt \mid T \geq t]}{ dt}. \]</span> This describes the instantaneous rate at which events occur, given no previous event. It is the probability that an event occurs in a very small time interval, given survival up to the start of the interval.</p>
+<p>The hazard function is the ratio of the probability of the event occurring at time <span class="math inline">\(t\)</span> to the probability of surviving up to time <span class="math inline">\(t\)</span>. <span class="math display">\[\begin{equation}
+    h(t)=\frac{f(t)}{S(t)}
+\end{equation}\]</span> Proof: <span class="math display">\[\begin{align*}
+    h(t) &amp;= \lim_{dt \to 0} \frac{\mathbb{P}[t \leq T \leq t + dt | T \geq t]}{dt} \\
+    &amp;= \lim_{dt \to 0} \frac{\mathbb{P}[t \leq T \leq t + dt , T \geq t]}{dt \cdot \mathbb{P}(T\geq t)} \\
+    &amp;= \lim_{dt \to 0} \frac{\mathbb{P}[t \leq T \leq t + dt]}{dt \cdot \mathbb{P}(T\geq t)} \\
+    &amp;= \lim_{dt \to 0} \frac{\mathbb{P}[t \leq T \leq t + dt]}{dt} \cdot \frac{1}{\mathbb{P}(T\geq t)} \\
+    &amp;= f(t) \cdot \frac{1}{S(t)}   \quad \blacksquare
+\end{align*}\]</span> <strong>Properties:</strong></p>
+<ul>
+<li><span class="math inline">\(f(0)=h(0)\)</span></li>
+<li><span class="math inline">\(f(t) \geq h(t), \forall t&gt;0\)</span>, because <span class="math inline">\(S(t) \leq 1, \forall t &gt; 0\)</span></li>
+<li><span class="math inline">\(h(t)\)</span> is a density function because it is not normalised.</li>
+<li>Any function <span class="math inline">\(h(t)\)</span> is a hazard rate function iff:
+<ol type="i">
+<li><span class="math inline">\(h(t) \geq 0, \forall t \geq 0\)</span></li>
+<li><span class="math inline">\(\int_0^{\infty} h(t) \, dt = \infty\)</span></li>
+</ol></li>
+<li>The survival function can be expressed in terms of the hazard function: <span class="math display">\[\begin{equation}
+      S(t) = \exp \left\{ - \int_{0}^{t} h(u) \, du \right\}
+  \end{equation}\]</span> Proof: <span class="math display">\[\begin{align*}
+      h(t) &amp;= \frac{f(t)}{S(t)} = \frac{F'(t)}{1-F(t)} = - \frac{S'(t)}{S(t)} = - \frac{d}{dt}(\ln{S(t)})\\
+      \int_0^t h(u) \,du &amp;= - [\ln{S(u)}]_0^t = -\ln{S(t)} + \ln{S(0)} = -\ln{S(t)} \quad \text{, as $S(0)=1$} \\
+      \therefore S(t) &amp;= \exp\left\{- \int_0^t h(u) \, du\right\} \quad \blacksquare
+  \end{align*}\]</span></li>
+</ul>
+<ol start="4" type="1">
+<li><strong>Cumulative hazard function</strong></li>
+</ol>
+<p>The function <span class="math display">\[\begin{equation}
+    H(t) = \int_0^t h(s) \, ds
+\end{equation}\]</span> is known as the cumulative hazard function.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><span class="math inline">\(H(0)=0\)</span></li>
+<li><span class="math inline">\(\lim_{t \to \infty}\)</span> <span class="math inline">\(H(t) = \infty\)</span></li>
+<li><span class="math inline">\(H(t)\)</span> is non-decreasing</li>
+<li><span class="math inline">\(H(t) = - \ln{S(t)} = - \ln{[1-F(t)]}\)</span></li>
+</ul>
+<ol start="5" type="1">
+<li><strong>Likelihood Function</strong></li>
+</ol>
+<p>When <span class="math inline">\(\delta_i=0\)</span>, i.e.&nbsp;alive/right-censored, <span class="math inline">\(L_i=S(t_i\mid \theta)\)</span>.</p>
+<p>The likelihood function is given by <span class="math display">\[\begin{align*}
+    L(\theta) &amp;= \prod_{i=1}^n f(t_i \mid \theta)^{\delta_i} S(t_i \mid \theta)^{1-\delta_i} \\
+    &amp;= \prod_{i=1}^n [h(t_i \mid \theta) \cdot S(t_i \mid \theta)]^{\delta_i} S(t_i \mid \theta)^{1-\delta_i}, \quad \text{because $h(t)=f(t)/S(t)$}\\
+    &amp;= \prod_{i=1}^n h(t_i \mid \theta)^{\delta_i} \cdot \exp \left\{ -H(t_i \mid \theta) \right\}, \quad \text{because $S(t) = \exp \left\{-H(t) \right\}$}
+\end{align*}\]</span> Therefore, the log-likelihood is <span class="math display">\[\begin{equation}
+    \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
+\end{equation}\]</span> This allows for calculating the maximum likelihood estimates of the parameters <span class="math inline">\(\theta\)</span> after a hazard function is specified. Also, this is useful in Bayesian framework.</p>
+</section>
+</section>
+<section id="hazard-response-model" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Hazard-Response Model</h1>
+<p>ODEs are used to characterise many physical systems, and using the system of ODEs to define the hazard function adds dynamics and interpretability. Here, we use the competitive Lotka-Volterra model to describe the competition between the hazard and response (from therapy, interventions and immune system). This model assumes the competing relationship between the hazard function <span class="math inline">\(f(t)\)</span> and the response <span class="math inline">\(q(t)\)</span>, which is related to the immune system and interventions recieved at a population level <span class="citation" data-cites="Rubio">(<a href="#ref-Rubio" role="doc-biblioref">Christen and Rubio 2024+</a>)</span>. The hazard-response model is defined through the below system of ODEs. <span class="math display">\[
+\begin{cases}
+    h'(t) = \lambda h(t) \left( 1-\frac{h(t)}{\kappa}\right) - \alpha q(t) h(t), \quad &amp;h(0)=h_0\\
+    q'(t) = \beta q(t) \left( 1-\frac{q(t)}{\kappa}\right) -\alpha q(t) h(t) , \quad &amp;q(0)=q_0\\
+    H'(t) = h(t), \quad  &amp;H(0)=0
+\end{cases}
+\]</span> where <span class="math inline">\(\lambda &gt; 0\)</span>, <span class="math inline">\(\alpha \geq 0\)</span>, <span class="math inline">\(\beta &gt; 0\)</span>, <span class="math inline">\(\kappa &gt; 0\)</span>, <span class="math inline">\(h_0 &gt; 0\)</span>, <span class="math inline">\(q_0 &gt; 0\)</span>. The competition between hazard and response is modeled through <span class="math inline">\(\alpha q(t) h(t)\)</span>, and the growth of the two are given by the logistic growth part <span class="math inline">\(\lambda h(t) \left( 1-\frac{h(t)}{\kappa}\right)\)</span>.</p>
+<p>When <span class="math inline">\(\alpha = 0\)</span>, there is no competition, and the hazard function will grow and reach a carrying capacity of <span class="math inline">\(\kappa\)</span> as the time tends to infinity. When <span class="math inline">\(\alpha &gt; 0\)</span>, both the hazard and the response will receive negative effect from the term <span class="math inline">\(- \alpha q(t) h(t)\)</span>.</p>
+<p><strong>Fixing the initial conditions</strong> To numerically solve the system of ODEs, we need to specify the initial conditions <span class="math inline">\(h_0\)</span> and <span class="math inline">\(q_0\)</span>. Based on prior knowledge,</p>
+</section>
+<section id="model-formulation-and-codes" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Model Formulation and Codes</h1>
+<div id="b6f43bcf" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response ODE model</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazResp</span>(dh, h, p, t)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ODE System</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    dh[<span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> h[<span class="fl">1</span>] <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> h[<span class="fl">1</span>] <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> h[<span class="fl">1</span>] <span class="op">*</span> h[<span class="fl">2</span>] <span class="co"># hazard</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    dh[<span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> h[<span class="fl">2</span>] <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> h[<span class="fl">2</span>] <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> h[<span class="fl">1</span>] <span class="op">*</span> h[<span class="fl">2</span>] <span class="co"># response</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    dh[<span class="fl">3</span>] <span class="op">=</span> h[<span class="fl">1</span>] <span class="co"># cumulative hazard</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>HazResp (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>Why we need Jacobian here? For stability. We calculate the Jacobian manually to avoid com- putational instability caused by numerical approximation of the derivatives.</p>
+<div id="4524d368" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Hazard-Response model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHR</span>(J, u, p, t)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state variables</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> u[<span class="fl">1</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> u[<span class="fl">2</span>]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Jacobian</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> h <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> q</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> h</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> q</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> q <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> h</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="cn">nothing</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>jacHR (generic function with 1 method)</code></pre>
+</div>
+</div>
+<p>The log hazard response model: How is the log scale helping?</p>
+<div id="b251d7ec" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response ODE model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazRespL</span>(dlh, lh, p, t)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ODE System</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> <span class="fu">exp</span>(lh[<span class="fl">2</span>]) <span class="co"># log hazard</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">exp</span>(lh[<span class="fl">2</span>]) <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="co"># log response</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">3</span>] <span class="op">=</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="co"># cumulative hazard</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Hazard-Response model</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHRL</span>(J, u, p, t)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state variables</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    lh <span class="op">=</span> u[<span class="fl">1</span>]</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    lq <span class="op">=</span> u[<span class="fl">2</span>]</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Jacobian</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>lambda <span class="op">*</span> <span class="fu">exp</span>(lh) <span class="op">/</span> kappa</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> <span class="fu">exp</span>(lq)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> <span class="fu">exp</span>(lh)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>beta <span class="op">*</span> <span class="fu">exp</span>(lq) <span class="op">/</span> kappa</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">exp</span>(lh)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="cn">nothing</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>jacHRL (generic function with 1 method)</code></pre>
+</div>
+</div>
+</section>
+<section id="bayesian-methods" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Bayesian Methods</h1>
+</section>
+<section id="turing" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Turing</h1>
+</section>
+<section id="predictive-hazard" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Predictive Hazard</h1>
+</section>
+<section id="some-results" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Some Results</h1>
+</section>
+<section id="summary" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Summary</h1>
+<p>Future work, adding covariates.</p>
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Rubio" class="csl-entry" role="listitem">
+Christen, J. A., and F. J. Rubio. 2024+. <span>“<span class="nocase">Dynamic Survival Analysis: Modelling the Hazard Function via Ordinary Differential Equations</span>.”</span> <em>*Statistical Methods in Medical Research*. In Press.</em>, 2024+. <a href="https://doi.org/10.1177/09622802241268504">https://doi.org/10.1177/09622802241268504</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
