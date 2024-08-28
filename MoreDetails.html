@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Minghan Yang">
-<meta name="dcterms.date" content="2024-08-27">
+<meta name="dcterms.date" content="2024-08-28">
 
 <title>Documentation</title>
 <style>
@@ -130,18 +130,22 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#survival-analysis-overview" id="toc-survival-analysis-overview" class="nav-link active" data-scroll-target="#survival-analysis-overview"><span class="header-section-number">1</span> Survival Analysis Overview</a>
+  <li><a href="#survival-analysis-basics" id="toc-survival-analysis-basics" class="nav-link active" data-scroll-target="#survival-analysis-basics"><span class="header-section-number">1</span> Survival Analysis Basics</a>
   <ul class="collapse">
   <li><a href="#censoring" id="toc-censoring" class="nav-link" data-scroll-target="#censoring"><span class="header-section-number">1.1</span> Censoring</a></li>
   <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="header-section-number">1.2</span> Functions</a></li>
   </ul></li>
-  <li><a href="#hazard-response-model" id="toc-hazard-response-model" class="nav-link" data-scroll-target="#hazard-response-model"><span class="header-section-number">2</span> Hazard-Response Model</a></li>
-  <li><a href="#model-formulation-and-codes" id="toc-model-formulation-and-codes" class="nav-link" data-scroll-target="#model-formulation-and-codes"><span class="header-section-number">3</span> Model Formulation and Codes</a></li>
-  <li><a href="#bayesian-methods" id="toc-bayesian-methods" class="nav-link" data-scroll-target="#bayesian-methods"><span class="header-section-number">4</span> Bayesian Methods</a></li>
-  <li><a href="#turing" id="toc-turing" class="nav-link" data-scroll-target="#turing"><span class="header-section-number">5</span> Turing</a></li>
-  <li><a href="#predictive-hazard" id="toc-predictive-hazard" class="nav-link" data-scroll-target="#predictive-hazard"><span class="header-section-number">6</span> Predictive Hazard</a></li>
-  <li><a href="#some-results" id="toc-some-results" class="nav-link" data-scroll-target="#some-results"><span class="header-section-number">7</span> Some Results</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">8</span> Summary</a></li>
+  <li><a href="#hazard-response-model" id="toc-hazard-response-model" class="nav-link" data-scroll-target="#hazard-response-model"><span class="header-section-number">2</span> Hazard-Response Model</a>
+  <ul class="collapse">
+  <li><a href="#model-formulation" id="toc-model-formulation" class="nav-link" data-scroll-target="#model-formulation"><span class="header-section-number">2.1</span> Model Formulation</a></li>
+  <li><a href="#fixing-the-initial-conditions" id="toc-fixing-the-initial-conditions" class="nav-link" data-scroll-target="#fixing-the-initial-conditions"><span class="header-section-number">2.2</span> Fixing the initial conditions</a></li>
+  <li><a href="#logarithmic-formulation-of-the-hazard-response-model" id="toc-logarithmic-formulation-of-the-hazard-response-model" class="nav-link" data-scroll-target="#logarithmic-formulation-of-the-hazard-response-model"><span class="header-section-number">2.3</span> Logarithmic formulation of the hazard-response model</a></li>
+  <li><a href="#codes" id="toc-codes" class="nav-link" data-scroll-target="#codes"><span class="header-section-number">2.4</span> Codes</a></li>
+  </ul></li>
+  <li><a href="#bayesian-methods-and-turing" id="toc-bayesian-methods-and-turing" class="nav-link" data-scroll-target="#bayesian-methods-and-turing"><span class="header-section-number">3</span> Bayesian Methods and Turing</a></li>
+  <li><a href="#predictive-hazard" id="toc-predictive-hazard" class="nav-link" data-scroll-target="#predictive-hazard"><span class="header-section-number">4</span> Predictive Hazard</a></li>
+  <li><a href="#some-results" id="toc-some-results" class="nav-link" data-scroll-target="#some-results"><span class="header-section-number">5</span> Some Results</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">6</span> Summary</a></li>
   </ul>
 </nav>
 </div>
@@ -166,7 +170,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 27, 2024</p>
+      <p class="date">August 28, 2024</p>
     </div>
   </div>
   
@@ -178,9 +182,8 @@ window.Quarto = {
 </header>
 
 
-<p>including the hazard-response model description, and some of the key codes and plots to describe the processes. Yes, I think you can start with a description of the hazard response model (directly, without going into the general formulation of ODEs), followed by a discussion on how to fix the initial conditions. After that, you can follow the code and add any text of formulas before the code, simply to explain what are you calculating. For instance, presenting the general formula of the likelihood function and explaining that you need a solver. Then, followed by a description of the priors that you will use, and a reference to Turing.jl. Then, a little description of the predictive hazard, and a brief discussion of the summaries you will present. It does not need to be very extensive, just simply formulas that explain what you are running in each chunk of code.</p>
-<section id="survival-analysis-overview" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Survival Analysis Overview</h1>
+<section id="survival-analysis-basics" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Survival Analysis Basics</h1>
 <p>Survival analysis is often used in areas such as biology, medicine, and engineering. For cancer studies, one typical topic is the survival of cancer patients after a diagnosis of cancer.</p>
 <p>The data used in survival analysis is often sample of from a population (<span class="math inline">\(t_1, t_2, \ldots, t_n\)</span>). in our project, we use the breast cancer patient data from hospitals in Rotterdam.</p>
 <ul>
@@ -289,11 +292,13 @@ window.Quarto = {
     &amp;= \prod_{i=1}^n h(t_i \mid \theta)^{\delta_i} \cdot \exp \left\{ -H(t_i \mid \theta) \right\}, \quad \text{because $S(t) = \exp \left\{-H(t) \right\}$}
 \end{align*}\]</span> Therefore, the log-likelihood is <span class="math display">\[\begin{equation}
     \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
-\end{equation}\]</span> This allows for calculating the maximum likelihood estimates of the parameters <span class="math inline">\(\theta\)</span> after a hazard function is specified. Also, this is useful in Bayesian framework.</p>
+\end{equation}\]</span> This allows for calculating the maximum likelihood estimates of the parameters <span class="math inline">\(\theta\)</span> after a hazard function is specified.</p>
 </section>
 </section>
 <section id="hazard-response-model" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Hazard-Response Model</h1>
+<section id="model-formulation" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="model-formulation"><span class="header-section-number">2.1</span> Model Formulation</h2>
 <p>ODEs are used to characterise many physical systems, and using the system of ODEs to define the hazard function adds dynamics and interpretability. Here, we use the competitive Lotka-Volterra model to describe the competition between the hazard and response (from therapy, interventions and immune system). This model assumes the competing relationship between the hazard function <span class="math inline">\(f(t)\)</span> and the response <span class="math inline">\(q(t)\)</span>, which is related to the immune system and interventions recieved at a population level <span class="citation" data-cites="Rubio">(<a href="#ref-Rubio" role="doc-biblioref">Christen and Rubio 2024+</a>)</span>. The hazard-response model is defined through the below system of ODEs. <span class="math display">\[
 \begin{cases}
     h'(t) = \lambda h(t) \left( 1-\frac{h(t)}{\kappa}\right) - \alpha q(t) h(t), \quad &amp;h(0)=h_0\\
@@ -302,11 +307,27 @@ window.Quarto = {
 \end{cases}
 \]</span> where <span class="math inline">\(\lambda &gt; 0\)</span>, <span class="math inline">\(\alpha \geq 0\)</span>, <span class="math inline">\(\beta &gt; 0\)</span>, <span class="math inline">\(\kappa &gt; 0\)</span>, <span class="math inline">\(h_0 &gt; 0\)</span>, <span class="math inline">\(q_0 &gt; 0\)</span>. The competition between hazard and response is modeled through <span class="math inline">\(\alpha q(t) h(t)\)</span>, and the growth of the two are given by the logistic growth part <span class="math inline">\(\lambda h(t) \left( 1-\frac{h(t)}{\kappa}\right)\)</span>.</p>
 <p>When <span class="math inline">\(\alpha = 0\)</span>, there is no competition, and the hazard function will grow and reach a carrying capacity of <span class="math inline">\(\kappa\)</span> as the time tends to infinity. When <span class="math inline">\(\alpha &gt; 0\)</span>, both the hazard and the response will receive negative effect from the term <span class="math inline">\(- \alpha q(t) h(t)\)</span>.</p>
-<p><strong>Fixing the initial conditions</strong> To numerically solve the system of ODEs, we need to specify the initial conditions <span class="math inline">\(h_0\)</span> and <span class="math inline">\(q_0\)</span>. Based on prior knowledge,</p>
 </section>
-<section id="model-formulation-and-codes" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Model Formulation and Codes</h1>
-<div id="b6f43bcf" class="cell" data-execution_count="1">
+<section id="fixing-the-initial-conditions" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="fixing-the-initial-conditions"><span class="header-section-number">2.2</span> Fixing the initial conditions</h2>
+<p>To numerically solve the system of ODEs, we need to specify the initial conditions <span class="math inline">\(h_0\)</span> and <span class="math inline">\(q_0\)</span>. Based on prior knowledge, within 1 month (<span class="math inline">\(\Delta t = 1/12\)</span>), approximately 1 in 1000 breast cancer patient die. So we use the approximation <span class="math display">\[h_0=h(0)=-\frac{S'(0)}{S(0)} \approx -\frac{S'(\Delta t)}{S(\Delta t)} \approx -\frac{S(\Delta t)-S(0)}{\Delta t S(\Delta t)} \approx 0.01.\]</span></p>
+<p>For <span class="math inline">\(q_0\)</span>, we assume that treatment usually does not start at the beginning of the follow-up. It is likely that the treatment take some time to start, so the effect of reducing the hazard function should be small at the beginning, and we choose the value <span class="math inline">\(q_0 = 10^{-6}\)</span>.</p>
+</section>
+<section id="logarithmic-formulation-of-the-hazard-response-model" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="logarithmic-formulation-of-the-hazard-response-model"><span class="header-section-number">2.3</span> Logarithmic formulation of the hazard-response model</h2>
+<p>By modeling the logarithmic hazard function, we ensure that the hazard function itself remains positive for all <span class="math inline">\(t\)</span>, which is essential as negative hazards do not make practical sense. The logarithmic scale can improve the numerical stability of the computations, especially when solving differential equations.</p>
+<p><span class="math display">\[
+\begin{cases}
+    \tilde{h}'(t) = \lambda \left( 1-\frac{\exp\{\tilde{h}(t)\}}{\kappa}\right) - \alpha \exp \{\tilde{q}(t)\}, \quad &amp; \tilde{h}(0)=\log \{h_0\}\\
+    \tilde{q}'(t) = \beta \left( 1-\frac{\exp\{\tilde{q}(t)\}}{\kappa}\right) -\alpha \exp\{\tilde{h}(t)\} , \quad &amp; \tilde{q}(0)=\log \{q_0\}\\
+    H'(t) = \exp\{\tilde{h}(t)\}, \quad  &amp; H(0)=0
+\end{cases}
+\]</span> where <span class="math inline">\(\tilde{h}(t) = \log \{h(t)\}\)</span>, and <span class="math inline">\(\theta=(\lambda, \kappa, \alpha, \beta)\)</span>.</p>
+</section>
+<section id="codes" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="codes"><span class="header-section-number">2.4</span> Codes</h2>
+<p>The hazard-response model is defined through the below function</p>
+<div id="5026fd29" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response ODE model</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazResp</span>(dh, h, p, t)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
@@ -318,91 +339,140 @@ window.Quarto = {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    dh[<span class="fl">3</span>] <span class="op">=</span> h[<span class="fl">1</span>] <span class="co"># cumulative hazard</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>HazResp (generic function with 1 method)</code></pre>
 </div>
+<p>For stability, we calculate the Jacobian manually to avoid computational instability caused by numerical approximation of the derivatives. <span class="math display">\[
+J_HR(t,h,q,H,\theta) =
+\begin{pmatrix}
+\lambda - \frac{2 \lambda h}{\kappa} - \alpha q &amp; - \alpha h &amp; 0 \\
+-\alpha q &amp; \beta - \frac{2 \beta h}{\kappa} - \alpha h &amp; 0 \\
+1 &amp; 0 &amp; 0
+\end{pmatrix}
+\]</span> where <span class="math inline">\(\theta=(\lambda, \kappa, \alpha, \beta)\)</span>.</p>
+<div id="3937701d" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Hazard-Response model</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHR</span>(J, u, p, t)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state variables</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> u[<span class="fl">1</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> u[<span class="fl">2</span>]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Jacobian</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> h <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> q</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> h</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> q</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> q <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> h</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cn">nothing</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Why we need Jacobian here? For stability. We calculate the Jacobian manually to avoid com- putational instability caused by numerical approximation of the derivatives.</p>
-<div id="4524d368" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Hazard-Response model</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHR</span>(J, u, p, t)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state variables</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> u[<span class="fl">1</span>]</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> u[<span class="fl">2</span>]</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Jacobian</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> h <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> q</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> h</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> q</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> q <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> h</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="cn">nothing</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>jacHR (generic function with 1 method)</code></pre>
+<p>The logarithmic hazard-response model is defined through the below function</p>
+<div id="60c4ab3c" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logarithmic Hazard-Response ODE model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazRespL</span>(dlh, lh, p, t)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ODE System</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> <span class="fu">exp</span>(lh[<span class="fl">2</span>]) <span class="co"># log hazard</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">exp</span>(lh[<span class="fl">2</span>]) <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="co"># log response</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">3</span>] <span class="op">=</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="co"># cumulative hazard</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Its corresponding Jacobian is calculated to be: <span class="math display">\[
+J_HR(t,h,q,H,\theta) =
+\begin{pmatrix}
+-\frac{\lambda}{\kappa} \exp\{\tilde{h}(t)\} &amp; - \alpha \exp \{\tilde{q}(t)\} &amp; 0 \\
+- \alpha \exp \{\tilde{h}(t)\} &amp; -\frac{\beta}{\kappa} \exp \{\tilde{q}(t)\} &amp; 0 \\
+\exp\{\tilde{h}(t)\} &amp; 0 &amp; 0
+\end{pmatrix}
+\]</span></p>
+<div id="d236dcc0" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Logarithmic Hazard-Response model</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHRL</span>(J, u, p, t)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state variables</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    lh <span class="op">=</span> u[<span class="fl">1</span>]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    lq <span class="op">=</span> u[<span class="fl">2</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Jacobian</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>lambda <span class="op">*</span> <span class="fu">exp</span>(lh) <span class="op">/</span> kappa</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> <span class="fu">exp</span>(lq)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> <span class="fu">exp</span>(lh)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>beta <span class="op">*</span> <span class="fu">exp</span>(lq) <span class="op">/</span> kappa</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">exp</span>(lh)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="cn">nothing</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The log hazard response model: How is the log scale helping?</p>
-<div id="b251d7ec" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response ODE model</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazRespL</span>(dlh, lh, p, t)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ODE System</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">1</span>] <span class="op">=</span> lambda <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> <span class="fu">exp</span>(lh[<span class="fl">2</span>]) <span class="co"># log hazard</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">2</span>] <span class="op">=</span> beta <span class="op">*</span> (<span class="fl">1</span> <span class="op">-</span> <span class="fu">exp</span>(lh[<span class="fl">2</span>]) <span class="op">/</span> kappa) <span class="op">-</span> alpha <span class="op">*</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="co"># log response</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    dlh[<span class="fl">3</span>] <span class="op">=</span> <span class="fu">exp</span>(lh[<span class="fl">1</span>]) <span class="co"># cumulative hazard</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Hazard-Response model</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHRL</span>(J, u, p, t)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    lambda, kappa, alpha, beta <span class="op">=</span> p</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># state variables</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    lh <span class="op">=</span> u[<span class="fl">1</span>]</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    lq <span class="op">=</span> u[<span class="fl">2</span>]</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Jacobian</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>lambda <span class="op">*</span> <span class="fu">exp</span>(lh) <span class="op">/</span> kappa</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> <span class="fu">exp</span>(lq)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">1</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="op">-</span>alpha <span class="op">*</span> <span class="fu">exp</span>(lh)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="op">-</span>beta <span class="op">*</span> <span class="fu">exp</span>(lq) <span class="op">/</span> kappa</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">2</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">exp</span>(lh)</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    J[<span class="fl">3</span>, <span class="fl">3</span>] <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="cn">nothing</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>jacHRL (generic function with 1 method)</code></pre>
+<p>Therefore we can define the ODE function for the logarithmic hazard-response model with explicit Jacobian and initial conditions:</p>
+<div id="db10f34d" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response model with explicit Jacobian</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>HRJL <span class="op">=</span> <span class="fu">ODEFunction</span>(HazRespL; jac<span class="op">=</span>jacHRL)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial conditions (h,q,H)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>lu0 <span class="op">=</span> [<span class="fu">log</span>(<span class="fl">1.0e-2</span>), <span class="fu">log</span>(<span class="fl">1.0e-6</span>), <span class="fl">0.0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="bayesian-methods-and-turing" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Bayesian Methods and Turing</h1>
+<p>As mentioned in Section 1, the log-likelihood can be calculated given the hazard function: <span class="math display">\[\begin{equation}
+    \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
+\end{equation}\]</span> For the hazard-response model, an analytical solution is not available. With an ODE solver from <code>DifferentialEquations.jl</code><span class="citation" data-cites="Julia_differential_equations">(<a href="#ref-Julia_differential_equations" role="doc-biblioref">Rackauckas and Nie 2017</a>)</span>, we will be able to solve for the hazard function, the response function, and the cumulative hazard function numerically.</p>
+<div id="d5aacced" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  log likelihood function (log h and log q)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>log_likL <span class="op">=</span> <span class="kw">function</span> (par)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters for the ODE</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    odeparams <span class="op">=</span> <span class="fu">exp</span>.(par)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    sol <span class="op">=</span> <span class="fu">solve</span>(<span class="fu">ODEProblem</span>(HRJL, lu0, [<span class="fl">0.0</span>, tmax], odeparams); alg_hints<span class="op">=</span>[<span class="op">:</span>stiff])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">#  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]),Tsit5())</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    OUT <span class="op">=</span> <span class="fu">sol</span>(df.time)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Terms in the log log likelihood function</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    ll_haz <span class="op">=</span> <span class="fu">sum</span>(OUT[<span class="fl">1</span>, status])</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    ll_chaz <span class="op">=</span> <span class="fu">sum</span>(OUT[<span class="fl">3</span>, <span class="op">:</span>])</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    ll <span class="op">=</span> ll_haz <span class="op">-</span> ll_chaz</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> ll</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In our analysis, we choose <code>Gamma(2,2)</code> to be the priors of our parameters. This is because <code>Gamma(2,2)</code> is weakly informative, meaning it is broad enough to allow the data to inform the posterior distribution without being overly restrictive. It has a mean of 4 and variance of 8, which provides a reasonable range for the parameters in the absence of strong prior knowledge. With the help of <code>Turing.jl</code> <span class="citation" data-cites="Turing">(<a href="#ref-Turing" role="doc-biblioref">Ge, Xu, and Ghahramani 2018</a>)</span>, we can apply MCMC samplers for posterior distributions of the parameters.</p>
+<div id="7a9da5ac" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span>, <span class="bu">Turing</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>distprior <span class="op">=</span> <span class="fu">Gamma</span>(<span class="fl">2</span>,<span class="fl">2</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@model</span> <span class="kw">function</span> <span class="fu">bayesian_model</span>(log_likL)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># prior (defined on the positive parameters)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>   odeparams <span class="op">~</span> <span class="fu">filldist</span>(distprior, <span class="fl">4</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> <span class="fu">log</span>.(odeparams)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        Turing.<span class="pp">@addlogprob</span>!(<span class="fu">log_likL</span>(params))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="86">
+<pre><code>bayesian_model (generic function with 2 methods)</code></pre>
 </div>
 </div>
 </section>
-<section id="bayesian-methods" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Bayesian Methods</h1>
+<section id="predictive-hazard" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Predictive Hazard</h1>
 </section>
-<section id="turing" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Turing</h1>
+<section id="some-results" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Some Results</h1>
 </section>
-<section id="predictive-hazard" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Predictive Hazard</h1>
-</section>
-<section id="some-results" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Some Results</h1>
-</section>
-<section id="summary" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Summary</h1>
+<section id="summary" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Summary</h1>
 <p>Future work, adding covariates.</p>
 
 </section>
@@ -410,6 +480,12 @@ window.Quarto = {
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Rubio" class="csl-entry" role="listitem">
 Christen, J. A., and F. J. Rubio. 2024+. <span>“<span class="nocase">Dynamic Survival Analysis: Modelling the Hazard Function via Ordinary Differential Equations</span>.”</span> <em>*Statistical Methods in Medical Research*. In Press.</em>, 2024+. <a href="https://doi.org/10.1177/09622802241268504">https://doi.org/10.1177/09622802241268504</a>.
+</div>
+<div id="ref-Turing" class="csl-entry" role="listitem">
+Ge, Hong, Kai Xu, and Zoubin Ghahramani. 2018. <span>“Turing: A Language for Flexible Probabilistic Inference,”</span> 1682–90. <a href="http://proceedings.mlr.press/v84/ge18b.html">http://proceedings.mlr.press/v84/ge18b.html</a>.
+</div>
+<div id="ref-Julia_differential_equations" class="csl-entry" role="listitem">
+Rackauckas, Christopher, and Qing Nie. 2017. <span>“Differential<span>E</span>quations.jl–a Performant and Feature-Rich Ecosystem for Solving Differential Equations in <span>J</span>ulia.”</span> <em>Journal of Open Research Software</em> 5 (1).
 </div>
 </div></section></div></main>
 <!-- /main column -->
