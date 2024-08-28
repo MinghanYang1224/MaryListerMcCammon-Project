@@ -15,7 +15,7 @@ execute:
 bibliography: references.bib
 ---
 
-# Survival Analysis Overview
+# Survival Analysis Basics
 Survival analysis is often used in areas such as biology, medicine, and engineering. For cancer studies, one typical topic is the survival of cancer patients after a diagnosis of cancer.
 
 The data used in survival analysis is often sample of \textbf{times to event} from a population ($t_1, t_2, \ldots, t_n$). in our project, we use the breast cancer patient data from hospitals in Rotterdam. 
@@ -145,9 +145,10 @@ Therefore, the log-likelihood is
 \begin{equation}
     \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
 \end{equation}
-This allows for calculating the maximum likelihood estimates of the parameters $\theta$ after a hazard function is specified. Also, this is useful in Bayesian framework.
+This allows for calculating the maximum likelihood estimates of the parameters $\theta$ after a hazard function is specified. 
 
 # Hazard-Response Model
+## Model Formulation
 ODEs are used to characterise many physical systems, and using the system of ODEs to define the hazard function adds dynamics and interpretability. Here, we use the competitive Lotka-Volterra model to describe the competition between the hazard and response (from therapy, interventions and immune system). This model assumes the competing relationship between the hazard function $f(t)$ and the response $q(t)$, which is related to the immune system and interventions recieved at a population level [@Rubio]. The hazard-response model is defined through the below system of ODEs. 
 $$
 \begin{cases}
@@ -160,13 +161,29 @@ where $\lambda > 0$, $\alpha \geq 0$, $\beta > 0$, $\kappa > 0$, $h_0 > 0$, $q_0
 
 When $\alpha = 0$, there is no competition, and the hazard function will grow and reach a carrying capacity of $\kappa$ as the time tends to infinity. When $\alpha > 0$, both the hazard and the response will receive negative effect from the term $- \alpha q(t) h(t)$.
 
-**Fixing the initial conditions**
-To numerically solve the system of ODEs, we need to specify the initial conditions $h_0$ and $q_0$. Based on prior knowledge, 
+## Fixing the initial conditions
+To numerically solve the system of ODEs, we need to specify the initial conditions $h_0$ and $q_0$. Based on prior knowledge, within 1 month ($\Delta t = 1/12$), approximately 1 in 1000 breast cancer patient die. So we use the approximation 
+$$h_0=h(0)=-\frac{S'(0)}{S(0)} \approx -\frac{S'(\Delta t)}{S(\Delta t)} \approx -\frac{S(\Delta t)-S(0)}{\Delta t S(\Delta t)} \approx 0.01.$$
 
+For $q_0$, we assume that treatment usually does not start at the beginning of the follow-up. It is likely that the treatment take some time to start, so the effect of reducing the hazard function should be small at the beginning, and we choose the value $q_0 = 10^{-6}$.
 
-# Model Formulation and Codes
+## Logarithmic formulation of the hazard-response model
 
+By modeling the logarithmic hazard function, we ensure that the hazard function itself remains positive for all $t$, which is essential as negative hazards do not make practical sense. The logarithmic scale can improve the numerical stability of the computations, especially when solving differential equations.
+
+$$
+\begin{cases}
+    \tilde{h}'(t) = \lambda \left( 1-\frac{\exp\{\tilde{h}(t)\}}{\kappa}\right) - \alpha \exp \{\tilde{q}(t)\}, \quad & \tilde{h}(0)=\log \{h_0\}\\
+    \tilde{q}'(t) = \beta \left( 1-\frac{\exp\{\tilde{q}(t)\}}{\kappa}\right) -\alpha \exp\{\tilde{h}(t)\} , \quad & \tilde{q}(0)=\log \{q_0\}\\
+    H'(t) = \exp\{\tilde{h}(t)\}, \quad  & H(0)=0
+\end{cases}
+$$
+where $\tilde{h}(t) = \log \{h(t)\}$, and $\theta=(\lambda, \kappa, \alpha, \beta)$.
+
+## Codes
+The hazard-response model is defined through the below function
 ```{julia}
+#| output: false
 # Hazard-Response ODE model
 function HazResp(dh, h, p, t)
     # Model parameters
@@ -178,15 +195,23 @@ function HazResp(dh, h, p, t)
     dh[3] = h[1] # cumulative hazard
     return nothing
 end
+
 ```
 
-
-Why we need Jacobian here? For stability. We calculate the Jacobian manually to avoid com-
-putational instability caused by numerical approximation of the derivatives.
+For stability, we calculate the Jacobian manually to avoid computational instability caused by numerical approximation of the derivatives.
+$$
+J_HR(t,h,q,H,\theta) = 
+\begin{pmatrix}
+\lambda - \frac{2 \lambda h}{\kappa} - \alpha q & - \alpha h & 0 \\
+-\alpha q & \beta - \frac{2 \beta h}{\kappa} - \alpha h & 0 \\
+1 & 0 & 0
+\end{pmatrix}
+$$
+where $\theta=(\lambda, \kappa, \alpha, \beta)$.
 
 ```{julia}
+#| output: false
 # Jacobian for Hazard-Response model
-
 function jacHR(J, u, p, t)
     # Parameters
     lambda, kappa, alpha, beta = p
@@ -206,14 +231,12 @@ function jacHR(J, u, p, t)
     J[3, 3] = 0.0
     nothing
 end
-
 ```
 
-The log hazard response model:
-How is the log scale helping?
-
+The logarithmic hazard-response model is defined through the below function
 ```{julia}
-# Hazard-Response ODE model
+#| output: false
+# Logarithmic Hazard-Response ODE model
 function HazRespL(dlh, lh, p, t)
     # Model parameters
     lambda, kappa, alpha, beta = p
@@ -224,9 +247,21 @@ function HazRespL(dlh, lh, p, t)
     dlh[3] = exp(lh[1]) # cumulative hazard
     return nothing
 end
+```
 
-# Jacobian for Hazard-Response model
+Its corresponding Jacobian is calculated to be:
+$$
+J_HR(t,h,q,H,\theta) = 
+\begin{pmatrix}
+-\frac{\lambda}{\kappa} \exp\{\tilde{h}(t)\} & - \alpha \exp \{\tilde{q}(t)\} & 0 \\
+- \alpha \exp \{\tilde{h}(t)\} & -\frac{\beta}{\kappa} \exp \{\tilde{q}(t)\} & 0 \\
+\exp\{\tilde{h}(t)\} & 0 & 0
+\end{pmatrix}
+$$
 
+```{julia}
+#| output: false
+# Jacobian for Logarithmic Hazard-Response model
 function jacHRL(J, u, p, t)
     # Parameters
     lambda, kappa, alpha, beta = p
@@ -248,11 +283,57 @@ function jacHRL(J, u, p, t)
 end
 ```
 
-# Bayesian Methods
+Therefore we can define the ODE function for the logarithmic hazard-response model with explicit Jacobian and initial conditions:
+```{julia}
+#| output: false
+using DifferentialEquations
+# Hazard-Response model with explicit Jacobian
+HRJL = ODEFunction(HazRespL; jac=jacHRL)
 
+# Initial conditions (h,q,H)
+lu0 = [log(1.0e-2), log(1.0e-6), 0.0]
+```
 
-# Turing
+# Bayesian Methods and Turing
+As mentioned in Section 1, the log-likelihood can be calculated given the hazard function:
+ \begin{equation}
+    \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
+\end{equation}
+For the hazard-response model, an analytical solution is not available. With an ODE solver from `DifferentialEquations.jl`[@Julia_differential_equations], we will be able to solve for the hazard function, the response function, and the cumulative hazard function numerically. 
+```{julia}
+#| output: false
+#  log likelihood function (log h and log q)
+log_likL = function (par)
+    # Parameters for the ODE
+    odeparams = exp.(par)
 
+    sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
+    #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]),Tsit5())
+    OUT = sol(df.time)
+
+    # Terms in the log log likelihood function
+    ll_haz = sum(OUT[1, status])
+    ll_chaz = sum(OUT[3, :])
+
+    ll = ll_haz - ll_chaz
+return ll
+end
+```
+
+In our analysis, we choose `Gamma(2,2)` to be the priors of our parameters. This is because `Gamma(2,2)` is weakly informative, meaning it is broad enough to allow the data to inform the posterior distribution without being overly restrictive. It has a mean of 4 and variance of 8, which provides a reasonable range for the parameters in the absence of strong prior knowledge. With the help of `Turing.jl` [@Turing], we can apply MCMC samplers for posterior distributions of the parameters.
+
+```{julia}
+using Distributions, Turing
+distprior = Gamma(2,2)
+
+@model function bayesian_model(log_likL)
+    # prior (defined on the positive parameters)
+   odeparams ~ filldist(distprior, 4)
+        params = log.(odeparams)
+
+        Turing.@addlogprob!(log_likL(params))
+    end
+```
 
 # Predictive Hazard
 
