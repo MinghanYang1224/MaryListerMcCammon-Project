@@ -327,7 +327,7 @@ window.Quarto = {
 <section id="codes" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="codes"><span class="header-section-number">2.4</span> Codes</h2>
 <p>The hazard-response model is defined through the below function</p>
-<div id="5026fd29" class="cell" data-execution_count="1">
+<div id="665d15e5" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response ODE model</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazResp</span>(dh, h, p, t)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
@@ -348,7 +348,7 @@ J_HR(t,h,q,H,\theta) =
 1 &amp; 0 &amp; 0
 \end{pmatrix}
 \]</span> where <span class="math inline">\(\theta=(\lambda, \kappa, \alpha, \beta)\)</span>.</p>
-<div id="3937701d" class="cell" data-execution_count="2">
+<div id="1e3981f3" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Hazard-Response model</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHR</span>(J, u, p, t)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
@@ -371,7 +371,7 @@ J_HR(t,h,q,H,\theta) =
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The logarithmic hazard-response model is defined through the below function</p>
-<div id="60c4ab3c" class="cell" data-execution_count="3">
+<div id="af140889" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Logarithmic Hazard-Response ODE model</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HazRespL</span>(dlh, lh, p, t)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Model parameters</span></span>
@@ -392,7 +392,7 @@ J_HR(t,h,q,H,\theta) =
 \exp\{\tilde{h}(t)\} &amp; 0 &amp; 0
 \end{pmatrix}
 \]</span></p>
-<div id="d236dcc0" class="cell" data-execution_count="4">
+<div id="b51d61cb" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jacobian for Logarithmic Hazard-Response model</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">jacHRL</span>(J, u, p, t)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters</span></span>
@@ -415,7 +415,7 @@ J_HR(t,h,q,H,\theta) =
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Therefore we can define the ODE function for the logarithmic hazard-response model with explicit Jacobian and initial conditions:</p>
-<div id="db10f34d" class="cell" data-execution_count="5">
+<div id="57af6e9a" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Hazard-Response model with explicit Jacobian</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>HRJL <span class="op">=</span> <span class="fu">ODEFunction</span>(HazRespL; jac<span class="op">=</span>jacHRL)</span>
@@ -430,7 +430,7 @@ J_HR(t,h,q,H,\theta) =
 <p>As mentioned in Section 1, the log-likelihood can be calculated given the hazard function: <span class="math display">\[\begin{equation}
     \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
 \end{equation}\]</span> For the hazard-response model, an analytical solution is not available. With an ODE solver from <code>DifferentialEquations.jl</code><span class="citation" data-cites="Julia_differential_equations">(<a href="#ref-Julia_differential_equations" role="doc-biblioref">Rackauckas and Nie 2017</a>)</span>, we will be able to solve for the hazard function, the response function, and the cumulative hazard function numerically.</p>
-<div id="d5aacced" class="cell" data-execution_count="6">
+<div id="b6c596bb" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  log likelihood function (log h and log q)</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>log_likL <span class="op">=</span> <span class="kw">function</span> (par)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parameters for the ODE</span></span>
@@ -449,7 +449,7 @@ J_HR(t,h,q,H,\theta) =
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In our analysis, we choose <code>Gamma(2,2)</code> to be the priors of our parameters. This is because <code>Gamma(2,2)</code> is weakly informative, meaning it is broad enough to allow the data to inform the posterior distribution without being overly restrictive. It has a mean of 4 and variance of 8, which provides a reasonable range for the parameters in the absence of strong prior knowledge. With the help of <code>Turing.jl</code> <span class="citation" data-cites="Turing">(<a href="#ref-Turing" role="doc-biblioref">Ge, Xu, and Ghahramani 2018</a>)</span>, we can apply MCMC samplers for posterior distributions of the parameters.</p>
-<div id="7a9da5ac" class="cell" data-execution_count="7">
+<div id="a0341e1b" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Distributions</span>, <span class="bu">Turing</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>distprior <span class="op">=</span> <span class="fu">Gamma</span>(<span class="fl">2</span>,<span class="fl">2</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -460,7 +460,7 @@ J_HR(t,h,q,H,\theta) =
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        Turing.<span class="pp">@addlogprob</span>!(<span class="fu">log_likL</span>(params))</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="86">
+<div class="cell-output cell-output-display" data-execution_count="95">
 <pre><code>bayesian_model (generic function with 2 methods)</code></pre>
 </div>
 </div>
