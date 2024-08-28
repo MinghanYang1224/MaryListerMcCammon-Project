@@ -14,10 +14,6 @@ execute:
     threads: 8  # Set the number of threads here
 bibliography: references.bib
 ---
-including the hazard-response model description, and some of the key codes and plots to describe the processes.
-Yes, I think you can start with a description of the hazard response model (directly, without going into the general formulation of ODEs), followed by a discussion on how to fix the initial conditions.
-After that, you can follow the code and add any text of formulas before the code, simply to explain what are you calculating. For instance, presenting the general formula of the likelihood function and explaining that you need a solver. Then, followed by a description of the priors that you will use, and a reference to Turing.jl. Then, a little description of the predictive hazard, and a brief discussion of the summaries you will present.
-It does not need to be very extensive, just simply formulas that explain what you are running in each chunk of code.
 
 # Survival Analysis Overview
 Survival analysis is often used in areas such as biology, medicine, and engineering. For cancer studies, one typical topic is the survival of cancer patients after a diagnosis of cancer.
