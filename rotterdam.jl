@@ -20,7 +20,6 @@ using DataFrames
 using ForwardDiff
 using StatsPlots
 using Turing
-using MCMCChains
 
 include("routinesODESurv.jl")
 
@@ -238,13 +237,3 @@ xlabel!("time")
 ylabel!("Predictive Survival Function")
 title!("Posterior Predictive Survival")
 
-
-# Set threads to 8 in terminal using "julia --threads 8"
-begin
-    chain_parallel = sample(model, NUTS(), MCMCThreads(), 110000, 2; init_params=MLE) # four chains in parallel
-    summarystats(chain_parallel)
-end
-
-# time used: 0:08:10
-
-chain_parallel
