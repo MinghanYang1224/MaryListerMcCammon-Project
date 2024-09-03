@@ -155,17 +155,14 @@ log_likL = function (par)
     # Parameters for the ODE
     odeparams = exp.(par)
 
-
     sol = solve(ODEProblem(HRJL, lu0, [0.0, tmax], odeparams); alg_hints=[:stiff])
     #  sol = solve(ODEProblem(HRJL, lu0, tspan0[i, :], odeparams[i, :]),Tsit5())
     OUT = sol(df.time)
-
 
     # Terms in the log log likelihood function
     ll_haz = sum(OUT[1, status])
 
     ll_chaz = sum(OUT[3, :])
-
 
     ll = ll_haz - ll_chaz
 
