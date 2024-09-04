@@ -336,9 +336,61 @@ distprior = Gamma(2,2)
 ```
 
 # Predictive Hazard
+With the posterior distribution for the parameter $\theta$, we can obtain the posterior distribution of the hazard function $h_{\theta}(t)$. Given a MCMC sample of the parameter $\theta^{(1)}, \ldots, \theta^{(M)}$, the posterior hazard functions are $h(t|\theta^{(1)}), \ldots, h(t|\theta^{(M)})$. 
 
+According to the relationship $h(t)=\frac{f(t)}{S(t)}$, the expected hazard should $\int \frac{f(t|\theta)}{S(t|\theta)} \pi(\theta|data) d\theta$.
 
+On the other hand, the predictive distribution $f(t)$ for a future patient is 
+$$
+f(t | data) = \int_{\Theta} f(t|\theta) \pi(\theta|data) d\theta = \int_{\Theta} h(t|\theta) \exp (-H(t|\theta)) \pi(\theta|data) d\theta.
+$$
+Then we can calculate the predictive hazard function 
+$$
+h(t|data) = \frac{f(t|data)}{1-\int_0^t f(r|data) dr}.
+$$
 # Some Results
+The marginal posterior distributions of the parameter $\theta=(\lambda, \kappa, \alpha, \beta)$ with priors are shown below:
+
+```{julia}
+#| echo: false
+# read posterior samples as dataframe.
+using CSV, DataFrames, Plots, StatsPlots
+postsamples = CSV.read("postsamp.csv", DataFrame)
+
+param_names = ["lambda", "kappa", "alpha", "beta"]
+priors = [Gamma(2, 2) for _ in 1:4]
+
+# define ranges in x axis for the four plots:
+x_ranges = [
+    range(0, stop=6,   length=1000),  # for lambda
+    range(0, stop=0.5, length=1000),  # for kappa
+    range(0, stop=11,  length=1000),  # for alpha
+    range(0, stop=10,  length=1000)   # for beta
+]
+
+function plot_posterior_with_prior(postsamples, priors, param_idx, param_name, x_range)
+    posterior_samples = postsamples[param_idx,:]
+    prior = priors[param_idx]
+    
+    prior_pdf = pdf.(prior, x_range)
+
+    # Plot
+    density(Vector(posterior_samples), normalize=true, label="Posterior", legend=:topright)
+    #histogram(posterior_samples, normalize=true, bins=30, label="Posterior", alpha=0.6)
+    plot!(x_range, prior_pdf, label="Prior", lw=2)
+    xlabel!(param_name)
+    ylabel!("Density")
+    title!("Posterior and Prior for $param_name",titlefont=font(10))
+end
+
+# Plot posterior vs prior
+plot_list = [plot_posterior_with_prior(postsamples, priors, i, param_names[i], x_ranges[i]) for i in 1:4]
+plot(plot_list..., layout=(2, 2), size = (650,500))
+```
+
 
 # Summary
-Future work, adding covariates. 
+Future work, adding covariates. q
+
+
+# numerical tricks
