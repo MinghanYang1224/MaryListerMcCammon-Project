@@ -237,3 +237,38 @@ xlabel!("time")
 ylabel!("Predictive Survival Function")
 title!("Posterior Predictive Survival")
 
+#=
+**********************************************************************************
+RMST Calculation and Plot
+**********************************************************************************
+=#
+
+# Define a function for trapezoidal integration
+function trapz(x, y)
+    # x: time points
+    # y: survival values at those time points
+    n = length(x)
+    integral = 0.0
+    for i in 1:(n-1)
+        integral += 0.5 * (x[i+1] - x[i]) * (y[i+1] + y[i])
+    end
+    return integral
+end
+
+# Define time horizon for RMST (for example, tau = 20.5)
+tau = 20.5
+
+# Compute the RMST by integrating the survival function over time up to tau
+nt = length(t_vector)  # Assuming t_vector is already defined
+RMST_tau = trapz(t_vector[t_vector .<= tau], Pred_S[t_vector .<= tau])
+
+# Plot the predictive survival function
+plot(t_vector, Pred_S, lw=2, label="Predictive Survival", xlabel="time", ylabel="Survival Probability", ylim=(0,1), legend=:topright)
+title!("Posterior Predictive Survival")
+
+# Shade the area under the predictive survival curve up to tau
+plot!(t_vector[t_vector .<= tau], Pred_S[t_vector .<= tau], fillrange=0, fillalpha=0.3, label="Restricted Mean Survival Time", color=:lightblue)
+
+# Annotate the plot with the RMST at tau
+annotate!(tau/2, 0.25, text("RMST(τ=20.5) = $(round(RMST_tau, digits=2)) years", :black, :bold))
+
