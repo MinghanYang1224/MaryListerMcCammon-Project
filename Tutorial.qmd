@@ -502,10 +502,8 @@ plot!(t_vector[t_vector .<= tau], Pred_S[t_vector .<= tau], fillrange=0, fillalp
 annotate!(tau/2, 0.25, text("RMST(τ=20.5) = $(round(RMST_tau, digits=2)) years", :black, :bold))
 ```
 
+# Future Work
+The current method apply to the analysis for population level. People might be interested in individual hazard predictions, then more covariated will be needed. It is reasonable that the hazard for individual is likely to be associated with the age, gender, deprivation level of that individual. A possible next step is exploring the incorporation of the covariates into the model. It might also be interesting to explore the application of this method to other topics outside medical statistics.
+
 # Summary
-
-
-Future work, adding covariates. q
-
-
-# numerical tricks
+The hazard function is a central concept in the analysis of survival data. In this work, we try to dynamically model the hazard function with the help of autonomous ordinary differential equations (ODEs). By using ODEs, we are able to improve the interpretability and flexibility of the model. With Bayesian methods and the help of MCMC, we are able to obtain some quantitative insights into the time evolution of the hazard function. To illustrate the practical application and interpretability, we present its application to the `rotterdam` dataset of breast cancer patient data and arrive at some interesting results. This case study shows that the hazard-response model facilitates the interpretation of competing processes involving the mortality hazard and population-level responses, potentially connected to clinical treatments and natural immune mechanisms.
