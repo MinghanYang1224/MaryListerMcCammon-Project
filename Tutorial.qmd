@@ -348,11 +348,13 @@ Then we can calculate the predictive hazard function
 $$
 h(t|data) = \frac{f(t|data)}{1-\int_0^t f(r|data) dr}.
 $$
+
 # Some Results
 The marginal posterior distributions of the parameter $\theta=(\lambda, \kappa, \alpha, \beta)$ with priors are shown below:
 
 ```{julia}
 #| echo: false
+include("routinesODESurv.jl")
 # read posterior samples as dataframe.
 using CSV, DataFrames, Plots, StatsPlots
 postsamples = CSV.read("postsamp.csv", DataFrame)
@@ -368,29 +370,137 @@ x_ranges = [
     range(0, stop=10,  length=1000)   # for beta
 ]
 
-function plot_posterior_with_prior(postsamples, priors, param_idx, param_name, x_range)
-    posterior_samples = postsamples[param_idx,:]
-    prior = priors[param_idx]
-    
-    prior_pdf = pdf.(prior, x_range)
-
-    # Plot
-    density(Vector(posterior_samples), normalize=true, label="Posterior", legend=:topright)
-    #histogram(posterior_samples, normalize=true, bins=30, label="Posterior", alpha=0.6)
-    plot!(x_range, prior_pdf, label="Prior", lw=2)
-    xlabel!(param_name)
-    ylabel!("Density")
-    title!("Posterior and Prior for $param_name",titlefont=font(10))
-end
-
 # Plot posterior vs prior
 plot_list = [plot_posterior_with_prior(postsamples, priors, i, param_names[i], x_ranges[i]) for i in 1:4]
 plot(plot_list..., layout=(2, 2), size = (650,500))
 ```
 
+The posterior predictive hazard function and response function.
+```{julia}
+#| echo: false
+# Number of posterior samples
+M = ncol(postsamples)
 
-# Summary
+# define time vector
+t_vector = [0.01:0.1:20.5;]
+nt = length(t_vector)
+
+# Posterior predictive hazard
+Predictive_hazard = zeros(nt)
+Predictive_hazardU = zeros(nt)
+Predictive_hazardL = zeros(nt)
+for i in 1:nt
+    Predictive_hazard[i] = PredHR(t_vector[i])[1]
+    Predictive_hazardU[i] = PredHR(t_vector[i])[2]
+    Predictive_hazardL[i] = PredHR(t_vector[i])[3]
+end
+
+# Postrior predictive response
+Predictive_response = zeros(nt)
+for i in 1:nt
+    Predictive_response[i] = PredResp(t_vector[i])
+end
+
+# Posterior predictive survival 
+Pred_S = zeros(nt)
+Pred_SU = zeros(nt)
+Pred_SL = zeros(nt)
+for i in 1:nt
+    Pred_S[i] = PredSurv(t_vector[i])[1]
+    Pred_SU[i] = PredSurv(t_vector[i])[2]
+    Pred_SL[i] = PredSurv(t_vector[i])[3]
+end
+
+# Plot the posterior predictive hazard and response
+plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.13))
+plot!(t_vector, Predictive_response, label="Predictive Response", lw=2)
+xlabel!("time")
+ylabel!("Predictive Functions")
+title!("Posterior Predictive Functions")
+
+``` 
+
+Posterior predictive hazard with 95% credible interval.
+```{julia}
+#| echo: false
+plot(t_vector, Predictive_hazard, label="Predictive Hazard", lw=2, ylim=(0,0.09))
+plot!(t_vector, Predictive_hazardU, fillrange=Predictive_hazardL, fillalpha=0.3, label="95% CI", color=:grey, linecolor=:transparent)
+xlabel!("time")
+ylabel!("Predictive Hazard Function")
+title!("Posterior Predictive Hazard")
+```
+
+Posterior predictive survival with 95% credible interval.
+```{julia}
+#| echo: false
+plot(t_vector, Pred_S, label="Predictive Survival", lw=2, ylim=(0,1))
+plot!(t_vector, Pred_SU, fillrange=Pred_SL, fillalpha=0.3, label="95% CI", color=:grey, linecolor=:transparent)
+xlabel!("time")
+ylabel!("Predictive Survival Function")
+title!("Posterior Predictive Survival")
+```
+
+We can also compare the predictive survival function with the Kaplan-Meier estimator.
+```{julia}
+#| echo: false
+df_full = CSV.File("rotterdamFull.csv");
+df = DataFrame(time=collect(df_full.dtime) ./ 365.25,
+    status=collect(df_full.death))
+# Sorting df by time
+sorted_indices = sortperm(df[:, :time]) # increasing order
+df = df[sorted_indices, :]
+#= Survival times =#
+times = df.time; 
+
+# Compare with Kaplan-Meier estimator
+using Survival
+km = fit(KaplanMeier, df.time, df.status)
+ktimes = sort(unique(times))
+ksurvival_probs = km.survival
+
+# Comparison plot
+plot(ktimes, ksurvival_probs,
+    xlabel = "Time (years)", ylabel = "Survival", title = "Kaplan-Meier VS Posterior Predictive Survival",
+    label = "Kaplan-Meier",
+  xlims = (0.0001,maximum(times)),   xticks = 0:2:maximum(times), linewidth=3,
+  linecolor = "gray", ylims = (0,1), linestyle=:solid)
+plot!(t_vector, Pred_S, label="Predictive Survival", lw=2)
+```
+
+We can also explore many other interpretation of the results for communication, for example the Restricted Mean Survival Time (RMST) which measures the averaged time that an individual in the population is expected to survive within a certain time frame [@RMST].
+
+```{julia}
+#| echo: false
+#| warning: false
+# Define a function for trapezoidal integration
+function trapz(x, y)
+    # x: time points
+    # y: survival values at those time points
+    n = length(x)
+    integral = 0.0
+    for i in 1:(n-1)
+        integral += 0.5 * (x[i+1] - x[i]) * (y[i+1] + y[i])
+    end
+    return integral
+end
+
+# Define time horizon for RMST (for example, tau = 20.5)
+tau = 20.5
+
+# Compute the RMST by integrating the survival function over time up to tau
+nt = length(t_vector)  # Assuming t_vector is already defined
+RMST_tau = trapz(t_vector[t_vector .<= tau], Pred_S[t_vector .<= tau])
+
+# Plot the predictive survival function
+plot(t_vector, Pred_S, lw=2, label="Predictive Survival", xlabel="time", ylabel="Survival Probability", ylim=(0,1), legend=:topright)
+title!("Posterior Predictive Survival")
+
+# Shade the area under the predictive survival curve up to tau
+plot!(t_vector[t_vector .<= tau], Pred_S[t_vector .<= tau], fillrange=0, fillalpha=0.3, label="Restricted Mean Survival Time", color=:lightblue)
+
+# Annotate the plot with the RMST at tau
+annotate!(tau/2, 0.25, text("RMST(τ=20.5) = $(round(RMST_tau, digits=2)) years", :black, :bold))
+```
+
+# 
 Future work, adding covariates. q
-
-
-# numerical tricks
