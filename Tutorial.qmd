@@ -344,9 +344,17 @@ On the other hand, the predictive distribution $f(t)$ for a future patient is
 $$
 f(t | data) = \int_{\Theta} f(t|\theta) \pi(\theta|data) d\theta = \int_{\Theta} h(t|\theta) \exp (-H(t|\theta)) \pi(\theta|data) d\theta.
 $$
-Then we can calculate the predictive hazard function 
+Then we can calculate the posterior predictive hazard function, which is the function of interest if we hope to prognose the hazard of a future patient
 $$
 h(t|data) = \frac{f(t|data)}{1-\int_0^t f(r|data) dr}.
+$$
+However, the analytical solution of $h(t|data)$ is not obtainable, so we use posterior samples of parameters to obtain a Monte Carlo approximation of it, which is shown to be
+$$
+h(t|data) \approx \frac{\frac{1}{M} \sum_{j=1}^{M} h(t|\theta^{(j)}) \exp \{ -H(t|\theta^{(j)})\}}{\frac{1}{M} \sum_{j=1}^{M} \exp \{ -H(t|\theta^{(j)})\}},
+$$
+and the predictive survival function could be approximated by 
+$$
+S(t|data) \approx \sum_{j=1}^{M} \exp \{ -H(t|\theta^{(j)})\}.
 $$
 
 # Some Results
