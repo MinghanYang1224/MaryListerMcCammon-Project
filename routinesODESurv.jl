@@ -250,3 +250,16 @@ function PredSurv(t)
     return SPred, SPredU, SPredL
     # returns the predictive hazard function evaluated at time t
 end
+
+
+# Define a function for trapezoidal integration
+function trapz(x, y)
+    # x: time points
+    # y: survival values at those time points
+    n = length(x)
+    integral = 0.0
+    for i in 1:(n-1)
+        integral += 0.5 * (x[i+1] - x[i]) * (y[i+1] + y[i])
+    end
+    return integral
+end
