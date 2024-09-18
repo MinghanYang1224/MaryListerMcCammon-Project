@@ -8,6 +8,11 @@ format:
     code-fold: false
     toc: true
     number-sections: true
+  pdf:
+    documentclass: article
+    toc: true
+    number-sections: true
+    geometry: "left=2cm, right=2cm, top=2cm, bottom=2cm"
 execute:
   kernel: julia
   options:
@@ -299,7 +304,7 @@ As mentioned in Section 1, the log-likelihood can be calculated given the hazard
  \begin{equation}
     \ell (\theta) = \sum_{i=1}^n \delta_i \log h(t_i \mid \theta, Y_0) - \sum_{i=1}^n H(t_i \mid \theta, Y_0).
 \end{equation}
-For the hazard-response model, an analytical solution is not available. With an ODE solver from `DifferentialEquations.jl`[@Julia_differential_equations], we will be able to solve for the hazard function, the response function, and the cumulative hazard function numerically. 
+For the hazard-response model, an analytical solution is not available. With an ODE solver from `DifferentialEquations.jl`, we will be able to solve for the hazard function, the response function, and the cumulative hazard function numerically [@Julia_differential_equations]. 
 ```{julia}
 #| output: false
 #  log likelihood function (log h and log q)
