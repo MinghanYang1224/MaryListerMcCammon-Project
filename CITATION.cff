@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "Generate citations"
+authors:
+- family-names: "Yang"
+  given-names: "Minghan"
+title: "Dynamic survival analysis - A Mary Lister McCammon fellowship project"
+date-released: 2024-07-01
+url: "https://github.com/MinghanYang1224/MaryListerMcCammon-Project"
